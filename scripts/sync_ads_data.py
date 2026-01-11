@@ -1,5 +1,6 @@
 import sys
 import os
+from pathlib import Path
 
 # Add backend directory to path so we can import services
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
@@ -8,7 +9,7 @@ from services.ads_connector import AdsConnector
 from services.bigquery_manager import BigQueryManager
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 def sync_data():
     print("--- Starting Data Sync ---")

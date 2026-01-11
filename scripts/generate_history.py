@@ -1,5 +1,6 @@
 import sys
 import os
+from pathlib import Path
 import random
 from datetime import datetime, timedelta
 import uuid
@@ -11,7 +12,7 @@ from services.ads_connector import AdsConnector
 from services.bigquery_manager import BigQueryManager
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 def generate_fake_history():
     print("--- Generating Fake History (Metrics) ---")

@@ -15,6 +15,7 @@ Usage:
 
 import sys
 import os
+from pathlib import Path
 import argparse
 import hashlib
 import csv
@@ -25,7 +26,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 
 def hash_sha256(value: str) -> str:

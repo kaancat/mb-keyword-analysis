@@ -1,9 +1,10 @@
 import os
+from pathlib import Path
 from google.cloud import bigquery
 from google.oauth2 import service_account
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 def init_bigquery():
     print("--- Initializing BigQuery ---")

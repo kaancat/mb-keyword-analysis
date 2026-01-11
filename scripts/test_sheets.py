@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import sys
 
 # Ensure we are running from the root directory context for imports
@@ -8,7 +9,7 @@ from dotenv import load_dotenv
 from services.google_sheets import GoogleSheetsService
 
 # Load environment variables
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 def test_sheets_connection():
     print("--- Testing Google Sheets Connection ---")

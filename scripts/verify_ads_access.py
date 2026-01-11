@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import sys
 from dotenv import load_dotenv
 
@@ -8,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.services.ads_connector import AdsConnector
 
 def main():
-    load_dotenv()
+    load_dotenv(Path.home() / ".mondaybrew" / ".env")
     
     print("--- Verifying Google Ads Access ---")
     print(f"Developer Token: {os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN')[:5]}...")

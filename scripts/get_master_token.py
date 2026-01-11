@@ -1,8 +1,9 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 # The "Master" scopes we need for the Agency OS
 SCOPES = [

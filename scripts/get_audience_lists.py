@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import sys
 from dotenv import load_dotenv
 from google.ads.googleads.client import GoogleAdsClient
@@ -8,7 +9,7 @@ from google.ads.googleads.errors import GoogleAdsException
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def get_user_lists():
-    load_dotenv()
+    load_dotenv(Path.home() / ".mondaybrew" / ".env")
     
     CUSTOMER_ID = "5207009970" # Karim Design
     

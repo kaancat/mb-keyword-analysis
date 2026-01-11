@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import sys
 from dotenv import load_dotenv
 from google.ads.googleads.client import GoogleAdsClient
@@ -7,7 +8,7 @@ from google.ads.googleads.errors import GoogleAdsException
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def apply_exclusion():
-    load_dotenv()
+    load_dotenv(Path.home() / ".mondaybrew" / ".env")
     
     # --- HARDCODED CONFIGURATION ---
     # Customer: Karim Design

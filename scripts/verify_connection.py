@@ -1,11 +1,12 @@
 import os
+from pathlib import Path
 import sys
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 def verify_connection():
     print("--- Verifying Google Ads Connection ---")

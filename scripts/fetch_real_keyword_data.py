@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import re
 import json
 import sys
@@ -7,7 +8,7 @@ from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
 
 # Load environment variables
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 # Configuration
 CUSTOMER_ID = "5912422766"  # Test Account ID from README

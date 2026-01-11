@@ -1,5 +1,6 @@
 import sys
 import os
+from pathlib import Path
 
 # Add the project root to the python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -8,7 +9,7 @@ from backend.services.ads_connector import AdsConnector
 from dotenv import load_dotenv
 
 def verify_conversions():
-    load_dotenv()
+    load_dotenv(Path.home() / ".mondaybrew" / ".env")
     
     print("Initializing AdsConnector...")
     try:

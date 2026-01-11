@@ -1,9 +1,10 @@
 import os
+from pathlib import Path
 from google_auth_oauthlib.flow import InstalledAppFlow
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 def generate_tokens():
     print("--- Generating Multi-Scope Refresh Token ---")

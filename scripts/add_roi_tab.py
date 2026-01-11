@@ -16,13 +16,14 @@ v3 improvements:
 """
 
 import os
+from pathlib import Path
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path.home() / ".mondaybrew" / ".env")
 
 from backend.services.google_sheets import GoogleSheetsService
 

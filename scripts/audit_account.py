@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import sys
 import json
 import argparse
@@ -202,7 +203,7 @@ def generate_markdown_report(data, filepath):
             f.write("\n")
 
 if __name__ == "__main__":
-    load_dotenv()
+    load_dotenv(Path.home() / ".mondaybrew" / ".env")
     parser = argparse.ArgumentParser(description="Run Google Ads Account Audit")
     parser.add_argument("--customer-id", required=True, help="Google Ads Customer ID")
     parser.add_argument("--ga4-property-id", help="GA4 Property ID (Optional)")
