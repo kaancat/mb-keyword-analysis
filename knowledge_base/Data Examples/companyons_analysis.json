@@ -1,0 +1,698 @@
+{
+  "client": "Companyons",
+  "language": "Danish",
+  "location": "Denmark",
+  "categories": {
+    "copenhagen": {
+      "url": "https://companyons.dk/nordhavn",
+      "keyword_count": 37,
+      "total_volume": 7150,
+      "keywords": [
+        {
+          "keyword": "kontor til leje københavn",
+          "volume": 590,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor leje københavn",
+          "volume": 590,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "lej kontor københavn",
+          "volume": 590,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "leje af kontor københavn",
+          "volume": 590,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorer til leje københavn",
+          "volume": 590,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor københavn leje",
+          "volume": 590,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "leje af kontor i københavn",
+          "volume": 590,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorfællesskab københavn",
+          "volume": 390,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor københavn",
+          "volume": 260,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorhotel københavn",
+          "volume": 260,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor i københavn",
+          "volume": 260,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "coworking københavn",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorlokaler københavn",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "virtuelt kontor københavn",
+          "volume": 140,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorplads københavn",
+          "volume": 110,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorlokaler til leje københavn",
+          "volume": 110,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorlokale leje københavn",
+          "volume": 110,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor til leje københavn k",
+          "volume": 90,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorfællesskab københavn k",
+          "volume": 90,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor østerbro",
+          "volume": 90,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorhotel østerbro",
+          "volume": 90,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorfællesskaber københavn",
+          "volume": 70,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor københavn k",
+          "volume": 70,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorhoteller københavn",
+          "volume": 50,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorhotel københavn k",
+          "volume": 50,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorhotel i københavn",
+          "volume": 50,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorplads nørrebro",
+          "volume": 50,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor vesterbro",
+          "volume": 40,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor hotel københavn",
+          "volume": 40,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorfællesskab østerbro",
+          "volume": 40,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kreativt kontorfællesskab københavn",
+          "volume": 40,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorfællesskab christianshavn",
+          "volume": 40,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorplads christianshavn",
+          "volume": 40,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "mødelokaler vesterbro",
+          "volume": 30,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor nordhavn",
+          "volume": 30,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorpladser københavn",
+          "volume": 20,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorfællesskab nordhavn",
+          "volume": 20,
+          "cpc": null,
+          "competition": "HIGH"
+        }
+      ]
+    },
+    "aarhus": {
+      "url": "https://companyons.dk/perron",
+      "keyword_count": 23,
+      "total_volume": 2460,
+      "keywords": [
+        {
+          "keyword": "kontorfællesskab aarhus",
+          "volume": 320,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor til leje århus",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor leje århus",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor leje aarhus",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "lej kontor aarhus",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "leje kontor århus",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "lej kontor århus",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor til leje i århus",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor aarhus",
+          "volume": 110,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorhotel aarhus",
+          "volume": 110,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor århus",
+          "volume": 110,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor i aarhus",
+          "volume": 110,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorplads aarhus",
+          "volume": 70,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorfællesskab århus",
+          "volume": 70,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorhotel århus",
+          "volume": 70,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorlokaler århus",
+          "volume": 70,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorlokaler aarhus",
+          "volume": 50,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor til leje aarhus",
+          "volume": 50,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor aarhus c",
+          "volume": 50,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorhotel aarhus c",
+          "volume": 50,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor aarhus ø",
+          "volume": 10,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorfællesskab aarhus ø",
+          "volume": 10,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontor århus ø",
+          "volume": 10,
+          "cpc": null,
+          "competition": "HIGH"
+        }
+      ]
+    },
+    "meeting_rooms": {
+      "url": "https://companyons.dk/ledige-lejemal/",
+      "keyword_count": 12,
+      "total_volume": 4790,
+      "keywords": [
+        {
+          "keyword": "lej mødelokale",
+          "volume": 880,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "lej et mødelokale",
+          "volume": 880,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "leje af mødelokale",
+          "volume": 880,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "leje mødelokale",
+          "volume": 880,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "mødelokaler",
+          "volume": 480,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "mødelokale",
+          "volume": 390,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "book mødelokale",
+          "volume": 110,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "møde lokaler",
+          "volume": 90,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "møde lokale",
+          "volume": 90,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "mødelokale leje",
+          "volume": 40,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "eksklusive mødelokaler",
+          "volume": 40,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "mødelokale med forplejning",
+          "volume": 30,
+          "cpc": null,
+          "competition": "LOW"
+        }
+      ]
+    },
+    "coworking": {
+      "url": "https://companyons.dk/",
+      "keyword_count": 4,
+      "total_volume": 1300,
+      "keywords": [
+        {
+          "keyword": "kontorfællesskab",
+          "volume": 720,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "coworking",
+          "volume": 480,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorfællesskaber",
+          "volume": 90,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "delekontor",
+          "volume": 10,
+          "cpc": null,
+          "competition": "HIGH"
+        }
+      ]
+    },
+    "office_rental": {
+      "url": "https://companyons.dk/ledige-lejemal/",
+      "keyword_count": 25,
+      "total_volume": 3140,
+      "keywords": [
+        {
+          "keyword": "kontor til leje",
+          "volume": 390,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "lej kontor",
+          "volume": 390,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorlokaler leje",
+          "volume": 210,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorlokaler",
+          "volume": 210,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorlokale",
+          "volume": 210,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorlokaler til leje",
+          "volume": 210,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "leje af kontorlokaler",
+          "volume": 210,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontor leje",
+          "volume": 170,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorplads",
+          "volume": 140,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "kontorlejemål",
+          "volume": 110,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontor udlejning",
+          "volume": 110,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontor udlejes",
+          "volume": 110,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "leje af kontor",
+          "volume": 90,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "leje af kontorer",
+          "volume": 90,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "leje af kontorplads",
+          "volume": 70,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "lej en kontorplads",
+          "volume": 70,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "leje kontorplads",
+          "volume": 70,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorer til leje",
+          "volume": 70,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorudlejning",
+          "volume": 70,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "lej kontorplads",
+          "volume": 50,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "lej et kontor",
+          "volume": 50,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "flex kontor",
+          "volume": 10,
+          "cpc": null,
+          "competition": "UNSPECIFIED"
+        },
+        {
+          "keyword": "fleksibelt kontor",
+          "volume": 10,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "privat kontor",
+          "volume": 10,
+          "cpc": null,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "teamkontor",
+          "volume": 10,
+          "cpc": null,
+          "competition": "LOW"
+        }
+      ]
+    },
+    "kontorhotel": {
+      "url": "https://companyons.dk/",
+      "keyword_count": 4,
+      "total_volume": 750,
+      "keywords": [
+        {
+          "keyword": "kontorhotel",
+          "volume": 480,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontor hotel",
+          "volume": 140,
+          "cpc": null,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "kontorhoteller",
+          "volume": 110,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "kontorhotel valby",
+          "volume": 20,
+          "cpc": null,
+          "competition": "HIGH"
+        }
+      ]
+    },
+    "virtual_office": {
+      "url": "https://companyons.dk/",
+      "keyword_count": 2,
+      "total_volume": 460,
+      "keywords": [
+        {
+          "keyword": "virtuelt kontor",
+          "volume": 320,
+          "cpc": null,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "virtuel kontor",
+          "volume": 140,
+          "cpc": null,
+          "competition": "LOW"
+        }
+      ]
+    }
+  }
+}

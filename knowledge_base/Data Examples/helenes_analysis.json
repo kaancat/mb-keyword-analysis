@@ -1,0 +1,167 @@
+{
+  "client": "Helenes Høreklinik",
+  "location": "Valby, Denmark",
+  "language": "Danish",
+  "budget_dkk_day": 120,
+  "budget_dkk_month": 3600,
+  "total_keywords": 18,
+  "total_volume": 3770,
+  "categories": {
+    "høretest": {
+      "url": "https://heleneshøreklinik.dk/",
+      "intent": "High",
+      "keywords": [
+        {
+          "text": "høretest",
+          "avg_monthly_searches": 590,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 2.410664,
+          "high_top_of_page_bid": 12.422071
+        },
+        {
+          "text": "gratis høretest",
+          "avg_monthly_searches": 140,
+          "competition": "MEDIUM",
+          "low_top_of_page_bid": 2.777604,
+          "high_top_of_page_bid": 17.50827
+        },
+        {
+          "text": "høre test",
+          "avg_monthly_searches": 50,
+          "competition": "MEDIUM",
+          "low_top_of_page_bid": 2.169059,
+          "high_top_of_page_bid": 12.329111
+        },
+        {
+          "text": "bestil høretest",
+          "avg_monthly_searches": 10,
+          "competition": "MEDIUM",
+          "low_top_of_page_bid": 10.811023,
+          "high_top_of_page_bid": 38.989184
+        },
+        {
+          "text": "høretest på nettet",
+          "avg_monthly_searches": 10,
+          "competition": "MEDIUM",
+          "low_top_of_page_bid": 0.909664,
+          "high_top_of_page_bid": 3.135145
+        },
+        {
+          "text": "høretjek",
+          "avg_monthly_searches": 10,
+          "competition": "MEDIUM",
+          "low_top_of_page_bid": 0.0,
+          "high_top_of_page_bid": 0.0
+        }
+      ]
+    },
+    "høreapparat": {
+      "url": "https://heleneshøreklinik.dk/",
+      "intent": "High",
+      "keywords": [
+        {
+          "text": "nyt høreapparat",
+          "avg_monthly_searches": 40,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 1.208243,
+          "high_top_of_page_bid": 4.476917
+        },
+        {
+          "text": "vedligeholdelse af høreapparater",
+          "avg_monthly_searches": 10,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.188815,
+          "high_top_of_page_bid": 2.754604
+        }
+      ]
+    },
+    "ørevoks_service": {
+      "url": "https://heleneshøreklinik.dk/",
+      "intent": "High",
+      "keywords": [
+        {
+          "text": "fjernelse af ørevoks",
+          "avg_monthly_searches": 1900,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.037358,
+          "high_top_of_page_bid": 0.524488
+        },
+        {
+          "text": "ørevoks",
+          "avg_monthly_searches": 720,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.024717,
+          "high_top_of_page_bid": 0.136325
+        },
+        {
+          "text": "ørevoks rens",
+          "avg_monthly_searches": 70,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.038163,
+          "high_top_of_page_bid": 0.716309
+        },
+        {
+          "text": "rens øre for ørevoks",
+          "avg_monthly_searches": 70,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.037451,
+          "high_top_of_page_bid": 0.403509
+        },
+        {
+          "text": "rense øre for ørevoks",
+          "avg_monthly_searches": 70,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.037451,
+          "high_top_of_page_bid": 0.403509
+        }
+      ]
+    },
+    "ørepropper": {
+      "url": "https://heleneshøreklinik.dk/",
+      "intent": "Medium",
+      "keywords": [
+        {
+          "text": "speciallavede ørepropper",
+          "avg_monthly_searches": 40,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.29739,
+          "high_top_of_page_bid": 1.036971
+        },
+        {
+          "text": "special ørepropper",
+          "avg_monthly_searches": 10,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 0.0,
+          "high_top_of_page_bid": 0.0
+        }
+      ]
+    },
+    "general": {
+      "url": "https://heleneshøreklinik.dk/",
+      "intent": "Medium",
+      "keywords": [
+        {
+          "text": "din hørelse",
+          "avg_monthly_searches": 10,
+          "competition": "LOW",
+          "low_top_of_page_bid": 0.0,
+          "high_top_of_page_bid": 0.0
+        },
+        {
+          "text": "høreklinikker i danmark",
+          "avg_monthly_searches": 10,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 1.382057,
+          "high_top_of_page_bid": 6.183241
+        },
+        {
+          "text": "bedre hørelse",
+          "avg_monthly_searches": 10,
+          "competition": "HIGH",
+          "low_top_of_page_bid": 2.545989,
+          "high_top_of_page_bid": 11.303603
+        }
+      ]
+    }
+  }
+}

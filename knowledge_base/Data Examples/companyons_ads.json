@@ -1,0 +1,94 @@
+[
+  {
+    "campaign": "mb | DA | Search | Kontor København",
+    "ad_group": "Kontor | København",
+    "url": "https://companyons.dk/nordhavn",
+    "headlines": [
+      "Kontor til leje København",
+      "Alt inkluderet i Nordhavn",
+      "Flexibilitet for teams",
+      "Book i dag!",
+      "Se ledige lokaler",
+      "Professionelt netværk",
+      "Ingen skjulte gebyrer",
+      "Mød dit nye kontorfællesskab",
+      "{KeyWord:Kontorhotel} i Vesterport",
+      "Vækst med fleksible vilkår"
+    ],
+    "descriptions": [
+      "Alt er med i huslejen - ingen overraskelser.",
+      "Bliv en del af et professionelt netværk i København.",
+      "Fleksible lejevilkår der matcher dit behov.",
+      "Book din plads i København’s bedste kontorfællesskab."
+    ]
+  },
+  {
+    "campaign": "mb | DA | Search | Kontor Aarhus",
+    "ad_group": "Kontor | Aarhus",
+    "url": "https://companyons.dk/perron",
+    "headlines": [
+      "Kontorfællesskab Aarhus",
+      "Alt inkluderet i huslejen",
+      "Fleksible lejetermer",
+      "Professionelt fællesskab",
+      "Book dit drømmekontor idag",
+      "Se Ledige Lokaler Nu",
+      "Kontor i Aarhus' hjerte",
+      "Bliv del af et fællesskab",
+      "Kontorhotel med alt inkl.",
+      "Perron: Din nye arbejdsplads"
+    ],
+    "descriptions": [
+      "Find dit nye kontor i Aarhus. Fleksible vilkår.",
+      "Alting inkluderet i prisen. Intet at bekymre sig om.",
+      "Join et professionelt fællesskab med alt inkluderet.",
+      "Book en rundvisning i dag og oplev forskellen."
+    ]
+  },
+  {
+    "campaign": "mb | DA | Search | Mødelokaler",
+    "ad_group": "Mødelokaler | Danmark",
+    "url": "https://companyons.dk/ledige-lejemal/",
+    "headlines": [
+      "Lej Mødelokale Nemt",
+      "Alt Inkluderet i Prisen",
+      "Fleksible Lejebetingelser",
+      "Professionelt Fællesskab",
+      "Book i Dag",
+      "Se Ledige Lokaler",
+      "Mødelokaler i Aarhus",
+      "Møderum i København",
+      "{KeyWord:Book Mødelokale}",
+      "Netværk og Samarbejde"
+    ],
+    "descriptions": [
+      "Alt er med når du lejer hos os.",
+      "Fleksibilitet og fællesskab i centrum.",
+      "Find dit næste møderum i Danmark.",
+      "Mødelokaler inkluderer alt - book nu."
+    ]
+  },
+  {
+    "campaign": "mb | DA | Search | Kontorfællesskab",
+    "ad_group": "Kontorfællesskab | Danmark",
+    "url": "https://companyons.dk/",
+    "headlines": [
+      "Kontorfællesskab i DK",
+      "Alt inkluderet i Aarhus",
+      "Flexibilitet i Kbh",
+      "Book i Dag",
+      "Se Ledige Lokaler",
+      "Professionelt fællesskab",
+      "Arbejd i {KeyWord:Aarhus}",
+      "Coworking i Nordhavn",
+      "Delekontor i Vesterport",
+      "Fællesskab med alt inkl."
+    ],
+    "descriptions": [
+      "Alt er med i huslejen. Fleksible vilkår.",
+      "Vær del af et professionelt fællesskab.",
+      "Kontorlokaler i Aarhus og København.",
+      "Book dit nye kontor. Få fleksibilitet."
+    ]
+  }
+]

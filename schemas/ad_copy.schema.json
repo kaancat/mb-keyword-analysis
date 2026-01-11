@@ -1,0 +1,228 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Tab 3: Ad Copy",
+    "description": "Schema for the 'Ad Copy' tab. Matches Google Ads Editor import format with headline/description positioning.",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "Campaign",
+            "Ad Group",
+            "Headline 1",
+            "Headline 2",
+            "Headline 3",
+            "Headline 1 position",
+            "Description 1",
+            "Description 2",
+            "Final URL"
+        ],
+        "properties": {
+            "Campaign": {
+                "type": "string",
+                "pattern": "^mb \\| [A-Z]{2} \\| (Search|Display|Video|Shopping|PMax|Brand) \\| .+$",
+                "description": "Campaign name following MB convention: mb | LANG | Type | Theme"
+            },
+            "Ad Group": {
+                "type": "string",
+                "description": "Ad group name: Service | Location or Theme | Modifier"
+            },
+            "Labels": {
+                "type": "string",
+                "description": "Optional labels for the ad group/ad."
+            },
+            "Headline 1": {
+                "type": "string",
+                "maxLength": 30,
+                "description": "SHOULD use {KeyWord:fallback text} for dynamic keyword insertion when ad groups are tightly themed. Example: {KeyWord:Rengøring i København}. Use static headlines for brand campaigns, competitor campaigns, or mixed-intent groups."
+            },
+            "Headline 1 position": {
+                "type": ["integer", "string"],
+                "enum": [1, "1", ""],
+                "description": "Pin to position 1 for keyword insertion headline"
+            },
+            "Headline 2": {
+                "type": "string",
+                "maxLength": 30,
+                "description": "For geo campaigns, use {LOCATION(City):fallback}. Example: Book rengøring i {LOCATION(City):din by}"
+            },
+            "Headline 2 position": {
+                "type": ["integer", "string"],
+                "enum": [2, "2", ""],
+                "description": "Pin to position 2 for location headline (optional)"
+            },
+            "Headline 3": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 3 position": {
+                "type": ["integer", "string"],
+                "description": "Leave blank to let Google rotate"
+            },
+            "Headline 4": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 4 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 5": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 5 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 6": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 6 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 7": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 7 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 8": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 8 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 9": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 9 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 10": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 10 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 11": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 11 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 12": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 12 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 13": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 13 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 14": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 14 position": {
+                "type": ["integer", "string"]
+            },
+            "Headline 15": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 15 position": {
+                "type": ["integer", "string"]
+            },
+            "Description 1": {
+                "type": "string",
+                "maxLength": 90
+            },
+            "Description 1 position": {
+                "type": ["integer", "string"],
+                "description": "Optional: pin to position 1"
+            },
+            "Description 2": {
+                "type": "string",
+                "maxLength": 90
+            },
+            "Description 2 position": {
+                "type": ["integer", "string"]
+            },
+            "Description 3": {
+                "type": "string",
+                "maxLength": 90
+            },
+            "Description 3 position": {
+                "type": ["integer", "string"]
+            },
+            "Description 4": {
+                "type": "string",
+                "maxLength": 90
+            },
+            "Description 4 position": {
+                "type": ["integer", "string"]
+            },
+            "Path 1": {
+                "type": "string",
+                "maxLength": 15
+            },
+            "Path 2": {
+                "type": "string",
+                "maxLength": 15
+            },
+            "Final URL": {
+                "type": "string",
+                "format": "uri"
+            }
+        }
+    },
+    "_mb_guidelines": {
+        "keyword_insertion": {
+            "rule": "Headline 1 SHOULD use {KeyWord:fallback} syntax for tightly themed ad groups (≤10 keywords sharing the same root concept). Use static headlines for brand campaigns, competitor campaigns, or mixed-intent groups.",
+            "evidence": "DKI improves CTR by 15-25% when ad groups are well-controlled, but can backfire on broad/mixed-intent groups.",
+            "examples": [
+                "{KeyWord:Kontor til leje i København}",
+                "{KeyWord:Rengøring i din by}",
+                "{KeyWord:Finn kontorfellesskap nå}"
+            ],
+            "when_to_skip_dki": [
+                "Brand campaigns (use brand name directly)",
+                "Competitor campaigns (avoid inserting competitor names)",
+                "Mixed-intent ad groups (keywords don't share grammatical structure)",
+                "Long-tail keywords that exceed 30 chars and would truncate"
+            ],
+            "pin": "Pin Headline 1 to position 1 when using DKI"
+        },
+        "location_insertion": {
+            "rule": "For geo-targeted campaigns, Headline 2 SHOULD use {LOCATION(City):fallback}",
+            "examples": [
+                "Utforsk kontorer i {LOCATION(City):din by}",
+                "Book rengøring i {LOCATION(City):København}",
+                "Se ledige lokaler i {LOCATION(City):Oslo}"
+            ],
+            "pin": "Pin Headline 2 to position 2 when using location insertion"
+        },
+        "pinning_strategy": {
+            "rule": "Only pin H1 (position 1) and optionally H2 (position 2). Leave all other positions blank.",
+            "reason": "Over-pinning reduces Google's ability to optimize combinations and hurts ad strength."
+        },
+        "headline_count": {
+            "rule": "Use 8-10 high-quality, differentiated headlines rather than filling all 15.",
+            "reason": "Each headline should add unique value. Redundant headlines hurt ad strength and testing clarity."
+        },
+        "sentence_case": {
+            "rule": "Use sentence case for all headlines and descriptions",
+            "correct": "Kontor til leje i København",
+            "incorrect": "Kontor Til Leje I København"
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "client_inputs": {
+    "budget": 6000,
+    "profit_per_customer": 2500,
+    "close_rate": 20
+  },
+  "campaign_estimates": {
+    "cpc": 12,
+    "website_conv_rate": 5
+  },
+  "calculated_outputs": {
+    "estimated_clicks": 500.0,
+    "estimated_leads": 25.0,
+    "estimated_customers": 5.0,
+    "estimated_revenue": 12500.0,
+    "estimated_profit": 6500.0,
+    "roas": "2.08x",
+    "status": "✅ Profitable"
+  }
+}

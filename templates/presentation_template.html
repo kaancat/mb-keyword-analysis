@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potentialeanalyse - {{CLIENT_NAME}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '{{BRAND_COLOR}}',
+                            light: '{{BRAND_LIGHT}}',
+                            dark: '{{BRAND_DARK}}'
+                        },
+                        accent: '{{ACCENT_COLOR}}',
+                        bgsoft: '#e9f4ff'
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [v-cloak] { display: none; }
+        .slide-enter-active, .slide-leave-active { transition: opacity 0.3s ease; }
+        .slide-enter-from, .slide-leave-to { opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+    <div id="app" v-cloak class="flex w-full h-full">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-xl z-10 flex flex-col border-r border-gray-100">
+            <div class="p-6 border-b border-gray-100 flex flex-col items-center bg-bgsoft">
+                <img v-if="clientLogo" :src="clientLogo" :alt="clientName" class="h-16 object-contain mb-4 drop-shadow">
+                <div v-else class="h-16 flex items-center justify-center text-2xl font-bold text-brand mb-4">{{ clientName }}</div>
+                <div class="text-xs font-bold text-brand uppercase tracking-wider">Potentialeanalyse</div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button @click="currentTab = 'summary'"
+                    :class="{'bg-brand text-white shadow-md': currentTab === 'summary', 'text-gray-600 hover:bg-gray-100': currentTab !== 'summary'}"
+                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
+                    <span class="text-xl">📊</span> Executive Summary
+                </button>
+                <button @click="currentTab = 'roi'"
+                    :class="{'bg-brand text-white shadow-md': currentTab === 'roi', 'text-gray-600 hover:bg-gray-100': currentTab !== 'roi'}"
+                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
+                    <span class="text-xl">🧮</span> ROI Beregner
+                </button>
+                <button @click="currentTab = 'keywords'"
+                    :class="{'bg-brand text-white shadow-md': currentTab === 'keywords', 'text-gray-600 hover:bg-gray-100': currentTab !== 'keywords'}"
+                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
+                    <span class="text-xl">🔍</span> Søgeordsanalyse
+                </button>
+                <button @click="currentTab = 'campaigns'"
+                    :class="{'bg-brand text-white shadow-md': currentTab === 'campaigns', 'text-gray-600 hover:bg-gray-100': currentTab !== 'campaigns'}"
+                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
+                    <span class="text-xl">🏗️</span> Kampagnestruktur
+                </button>
+                <button @click="currentTab = 'ads'"
+                    :class="{'bg-brand text-white shadow-md': currentTab === 'ads', 'text-gray-600 hover:bg-gray-100': currentTab !== 'ads'}"
+                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
+                    <span class="text-xl">📢</span> Annonceeksempler
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-gray-100 text-center text-xs text-gray-400">
+                <div class="mb-2">Udarbejdet af</div>
+                <div class="font-bold text-brand">Monday Brew</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+
+            <!-- Summary Tab -->
+            <div v-if="currentTab === 'summary'" class="max-w-4xl mx-auto space-y-8 animate-fade-in">
+                <header class="mb-8">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-xs font-semibold text-brand uppercase tracking-[0.15em]">{{ clientTagline }}</span>
+                        <span class="h-1 w-8 bg-accent rounded-full"></span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Potentialeanalyse for {{ clientName }}</h1>
+                    <p class="text-lg text-gray-600">{{ summarySubtitle }}</p>
+                    <div class="mt-4 flex gap-3">
+                        <a :href="clientCTA" target="_blank" class="px-4 py-2 rounded-lg bg-brand text-white font-semibold shadow hover:opacity-90 transition">Kontakt os</a>
+                        <a :href="clientWebsite" target="_blank" class="px-4 py-2 rounded-lg border border-brand text-brand font-semibold hover:bg-bgsoft transition">Besøg website</a>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-brand font-bold text-lg mb-2">Estimeret Omsætning</div>
+                        <div class="text-3xl font-bold text-gray-900">{{ formatCurrency(roiOutputs.estimated_revenue) }}</div>
+                        <div class="text-sm text-gray-500 mt-1">pr. måned ved {{ formatCurrency(inputs.budget) }} budget</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-brand font-bold text-lg mb-2">Estimeret ROAS</div>
+                        <div class="text-3xl font-bold text-green-600">{{ roiOutputs.roas }}</div>
+                        <div class="text-sm text-gray-500 mt-1">Return on Ad Spend</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-brand font-bold text-lg mb-2">Nye Kunder</div>
+                        <div class="text-3xl font-bold text-gray-900">{{ roiOutputs.estimated_customers }}</div>
+                        <div class="text-sm text-gray-500 mt-1">estimeret pr. måned</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 prose prose-blue max-w-none">
+                    <h3 class="text-xl font-bold text-brand mb-4">Executive Summary</h3>
+                    <div v-html="executiveSummary"></div>
+                </div>
+            </div>
+
+            <!-- ROI Calculator Tab -->
+            <div v-if="currentTab === 'roi'" class="max-w-6xl mx-auto animate-fade-in">
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">ROI Beregner</h1>
+                    <p class="text-gray-600">Juster tallene herunder for at se potentialet baseret på jeres egne data.</p>
+                </header>
+
+                <!-- Interactive Input Controls -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Månedligt Budget</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">kr.</span>
+                                </div>
+                                <input type="number" v-model.number="inputs.budget"
+                                    class="focus:ring-brand focus:border-brand block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fortjeneste pr. kunde</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">kr.</span>
+                                </div>
+                                <input type="number" v-model.number="inputs.profit_per_customer"
+                                    class="focus:ring-brand focus:border-brand block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Estimeret CPC</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">kr.</span>
+                                </div>
+                                <input type="number" v-model.number="estimates.cpc"
+                                    class="focus:ring-brand focus:border-brand block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Website konvertering</label>
+                            <div class="flex items-center gap-2">
+                                <input type="range" v-model.number="estimates.website_conv_rate" min="1" max="20" step="0.5"
+                                    class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600">
+                                <span class="text-sm font-semibold text-gray-700 w-12 text-right">{{ estimates.website_conv_rate }}%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Lukningsrate</label>
+                            <div class="flex items-center gap-2">
+                                <input type="range" v-model.number="inputs.close_rate" min="1" max="100"
+                                    class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand">
+                                <span class="text-sm font-semibold text-gray-700 w-12 text-right">{{ inputs.close_rate }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Funnel Visualization -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                        <div class="bg-blue-50 px-6 py-4 rounded-lg text-center min-w-[140px]">
+                            <div class="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Trafik</div>
+                            <div class="text-2xl font-bold text-brand">{{ Math.round(roiOutputs.estimated_clicks) }}</div>
+                            <div class="text-sm text-gray-600">besøgende</div>
+                        </div>
+                        <div class="text-gray-300 text-2xl hidden md:block">→</div>
+                        <div class="text-gray-300 text-2xl md:hidden">↓</div>
+                        <div class="bg-blue-50 px-6 py-4 rounded-lg text-center min-w-[140px]">
+                            <div class="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Leads</div>
+                            <div class="text-2xl font-bold text-brand">{{ roiOutputs.estimated_leads }}</div>
+                            <div class="text-sm text-gray-600">henvendelser</div>
+                        </div>
+                        <div class="text-gray-300 text-2xl hidden md:block">→</div>
+                        <div class="text-gray-300 text-2xl md:hidden">↓</div>
+                        <div class="bg-green-50 px-6 py-4 rounded-lg text-center min-w-[140px] border-2 border-green-400">
+                            <div class="text-xs text-green-700 uppercase tracking-wide font-semibold mb-1">Nye Kunder</div>
+                            <div class="text-3xl font-bold text-green-800">{{ roiOutputs.estimated_customers }}</div>
+                            <div class="text-sm text-green-600">pr. måned</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROI Table -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200">
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/4">Label</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/6">Værdi</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/4">Hvad betyder det?</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/3">Beregning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-blue-600 text-white">
+                                <td class="px-6 py-3 font-bold text-sm" colspan="4">📊 DINE TAL</td>
+                            </tr>
+                            <tr v-for="row in roiTable.inputs" :key="'input-' + row.label" class="border-b border-gray-100 hover:bg-blue-50/50">
+                                <td class="px-6 py-3 text-sm text-gray-800">{{ row.label }}</td>
+                                <td class="px-6 py-3 text-sm font-bold text-gray-900 bg-yellow-50">{{ row.value }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-600 italic">{{ row.note }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-400">—</td>
+                            </tr>
+                            <tr class="bg-teal-600 text-white">
+                                <td class="px-6 py-3 font-bold text-sm" colspan="4">📈 KAMPAGNE ESTIMATER</td>
+                            </tr>
+                            <tr v-for="row in roiTable.estimates" :key="'est-' + row.label" class="border-b border-gray-100 hover:bg-teal-50/50">
+                                <td class="px-6 py-3 text-sm text-gray-800">{{ row.label }}</td>
+                                <td class="px-6 py-3 text-sm font-bold text-gray-900 bg-yellow-50">{{ row.value }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-600 italic">{{ row.note }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-400">—</td>
+                            </tr>
+                            <tr class="bg-green-600 text-white">
+                                <td class="px-6 py-3 font-bold text-sm" colspan="4">🧮 BEREGNEDE RESULTATER</td>
+                            </tr>
+                            <tr v-for="row in roiTable.results" :key="'res-' + row.label" class="border-b border-gray-100 hover:bg-green-50/50">
+                                <td class="px-6 py-3 text-sm text-gray-800">{{ row.label }}</td>
+                                <td class="px-6 py-3 text-sm font-bold text-gray-900">{{ row.value }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-600 italic">{{ row.note }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-500 font-mono">{{ row.calc }}</td>
+                            </tr>
+                            <tr class="border-t-2 border-gray-300">
+                                <td class="px-6 py-4 font-bold text-gray-800">STATUS</td>
+                                <td class="px-6 py-4 font-bold text-lg"
+                                    :class="roiOutputs.estimated_profit >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+                                    {{ roiOutputs.estimated_profit >= 0 ? '✅ Profitable' : '❌ Ikke profitable' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600" colspan="2">
+                                    {{ roiOutputs.estimated_profit >= 0 ? 'Du tjener penge på Google Ads!' : 'Justér dine tal for at opnå profitabilitet.' }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Keywords Tab -->
+            <div v-if="currentTab === 'keywords'" class="max-w-5xl mx-auto animate-fade-in">
+                <header class="mb-8 flex justify-between items-end">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Søgeordsanalyse</h1>
+                        <p class="text-gray-600">Hvad søger dine potentielle kunder efter?</p>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-sm">
+                        <span class="font-bold text-brand">{{ keywords.length }}</span> søgeord fundet
+                    </div>
+                </header>
+
+                <!-- Keyword filter -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <input type="text" v-model="keywordSearch" placeholder="Søg søgeord..."
+                            class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-brand focus:border-brand">
+                        <select v-model="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-brand focus:border-brand">
+                            <option value="">Alle kategorier</option>
+                            <option v-for="cat in uniqueCategories" :key="cat" :value="cat">{{ cat }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Søgeord</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Månedlige Søgninger</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Konkurrence</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top bud (lav)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top bud (høj)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr v-for="(kw, index) in filteredKeywords" :key="index" class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ kw.Keyword || kw.keyword }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div class="flex items-center">
+                                            <div class="w-16 bg-gray-200 rounded-full h-1.5 mr-2">
+                                                <div class="bg-brand h-1.5 rounded-full" :style="{ width: Math.min(100, ((kw['Avg. Monthly Searches'] || kw.avg_monthly_searches || 0) / maxVolume) * 100) + '%' }"></div>
+                                            </div>
+                                            {{ kw['Avg. Monthly Searches'] || kw.avg_monthly_searches || 0 }}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <span :class="getCompetitionClass(kw.Competition || kw.competition)"
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                            {{ kw.Competition || kw.competition || 'N/A' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatBid(kw['Top of page bid (low range)'] || kw.low_top_of_page_bid) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatBid(kw['Top of page bid (high range)'] || kw.high_top_of_page_bid) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ kw.Category || kw.category || 'N/A' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campaigns Tab -->
+            <div v-if="currentTab === 'campaigns'" class="max-w-5xl mx-auto animate-fade-in">
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Kampagnestruktur</h1>
+                    <p class="text-gray-600">Hvordan vi organiserer kontoen for maksimal effektivitet.</p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div v-for="(group, campaignName) in groupedCampaigns" :key="campaignName"
+                        class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="font-bold text-gray-900">{{ formatCampaignName(campaignName) }}</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Campaign</span>
+                        </div>
+                        <div class="p-6">
+                            <div v-for="(keywords, adGroup) in group" :key="adGroup" class="mb-6 last:mb-0">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                    <h4 class="font-medium text-gray-800">{{ adGroup }}</h4>
+                                </div>
+                                <div class="ml-4 flex flex-wrap gap-2">
+                                    <span v-for="kw in keywords.slice(0, 8)" :key="kw"
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                        "{{ kw }}"
+                                    </span>
+                                    <span v-if="keywords.length > 8" class="text-xs text-gray-500 self-center">
+                                        +{{ keywords.length - 8 }} mere
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ads Tab -->
+            <div v-if="currentTab === 'ads'" class="max-w-4xl mx-auto animate-fade-in">
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Annonceeksempler</h1>
+                    <p class="text-gray-600">Hvordan dine annoncer vil se ud på Google.</p>
+                </header>
+
+                <div class="space-y-6">
+                    <div v-for="(ad, index) in ads" :key="index"
+                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="text-xs text-gray-400 mb-4 uppercase tracking-wider font-semibold">{{ formatCampaignName(ad.Campaign || ad.campaign) }}</div>
+
+                        <!-- Google Ad Preview -->
+                        <div class="font-sans max-w-xl">
+                            <div class="flex items-center gap-1 mb-1">
+                                <span class="font-bold text-black text-sm">Annonce</span>
+                                <span class="text-green-700 text-sm">· {{ ad['Final URL'] || ad.final_url }}</span>
+                            </div>
+                            <div class="text-[#1a0dab] text-xl hover:underline cursor-pointer mb-1 leading-snug">
+                                {{ formatHeadline(ad['Headline 1'] || ad.headline_1) }} | {{ ad['Headline 2'] || ad.headline_2 }} | {{ ad['Headline 3'] || ad.headline_3 }}
+                            </div>
+                            <div class="text-[#4d5156] text-sm leading-relaxed">
+                                {{ ad['Description 1'] || ad.description_1 }} {{ ad['Description 2'] || ad.description_2 }}
+                            </div>
+
+                            <!-- Sitelink extensions mock -->
+                            <div class="mt-4 flex gap-4 text-[#1a0dab] text-sm">
+                                <span class="hover:underline cursor-pointer">Kontakt os</span>
+                                <span class="hover:underline cursor-pointer">Vores services</span>
+                                <span class="hover:underline cursor-pointer">Om os</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, reactive } = Vue;
+
+        createApp({
+            setup() {
+                const currentTab = ref('summary');
+                const keywordSearch = ref('');
+                const categoryFilter = ref('');
+
+                // --- DATA INJECTION START ---
+                const clientName = '{{CLIENT_NAME}}';
+                const clientLogo = '{{CLIENT_LOGO}}';
+                const clientTagline = '{{CLIENT_TAGLINE}}';
+                const clientWebsite = '{{CLIENT_WEBSITE}}';
+                const clientCTA = '{{CLIENT_CTA}}';
+                const summarySubtitle = '{{SUMMARY_SUBTITLE}}';
+                const executiveSummary = `{{EXECUTIVE_SUMMARY}}`;
+
+                const keywords = {{KEYWORDS_JSON}};
+                const campaignStructure = {{CAMPAIGN_STRUCTURE_JSON}};
+                const ads = {{ADS_JSON}};
+
+                const inputs = reactive({
+                    budget: {{BUDGET}},
+                    profit_per_customer: {{PROFIT_PER_CUSTOMER}},
+                    close_rate: {{CLOSE_RATE}}
+                });
+
+                const estimates = reactive({
+                    cpc: {{CPC}},
+                    website_conv_rate: {{CONVERSION_RATE}}
+                });
+                // --- DATA INJECTION END ---
+
+                const maxVolume = computed(() => {
+                    return Math.max(...keywords.map(k => k['Avg. Monthly Searches'] || k.avg_monthly_searches || 0), 1);
+                });
+
+                const uniqueCategories = computed(() => {
+                    const cats = new Set(keywords.map(k => k.Category || k.category).filter(Boolean));
+                    return [...cats].sort();
+                });
+
+                const filteredKeywords = computed(() => {
+                    return keywords.filter(kw => {
+                        const keyword = (kw.Keyword || kw.keyword || '').toLowerCase();
+                        const category = kw.Category || kw.category || '';
+                        const matchesSearch = !keywordSearch.value || keyword.includes(keywordSearch.value.toLowerCase());
+                        const matchesCategory = !categoryFilter.value || category === categoryFilter.value;
+                        return matchesSearch && matchesCategory;
+                    });
+                });
+
+                const roiOutputs = computed(() => {
+                    const clicks = inputs.budget / estimates.cpc;
+                    const leads = clicks * (estimates.website_conv_rate / 100);
+                    const customers = leads * (inputs.close_rate / 100);
+                    const revenue = customers * inputs.profit_per_customer;
+                    const profit = revenue - inputs.budget;
+                    const roas = inputs.budget > 0 ? (revenue / inputs.budget).toFixed(2) + 'x' : '0x';
+
+                    return {
+                        estimated_clicks: clicks,
+                        estimated_leads: Number(leads.toFixed(1)),
+                        estimated_customers: Number(customers.toFixed(1)),
+                        estimated_revenue: revenue,
+                        estimated_profit: profit,
+                        roas: roas
+                    };
+                });
+
+                const formatCurrency = (value) => {
+                    return new Intl.NumberFormat('da-DK', { style: 'currency', currency: '{{CURRENCY}}', maximumFractionDigits: 0 }).format(value);
+                };
+
+                const formatBid = (bid) => {
+                    if (!bid) return '-';
+                    if (typeof bid === 'string') return bid;
+                    return formatCurrency(bid);
+                };
+
+                const getCompetitionClass = (comp) => {
+                    const level = (comp || '').toLowerCase();
+                    if (level === 'high') return 'bg-red-100 text-red-800';
+                    if (level === 'medium') return 'bg-yellow-100 text-yellow-800';
+                    if (level === 'low') return 'bg-green-100 text-green-800';
+                    return 'bg-gray-100 text-gray-800';
+                };
+
+                const formatCampaignName = (name) => {
+                    if (!name) return '';
+                    return name.replace(/^mb \| [A-Z]{2} \| [^|]+ \| /, '');
+                };
+
+                const formatHeadline = (headline) => {
+                    if (!headline) return '';
+                    return headline.replace(/{KeyWord:([^}]+)}/, '$1').replace(/{LOCATION\(City\):([^}]+)}/, '$1');
+                };
+
+                const roiTable = computed(() => {
+                    const clicks = Math.round(roiOutputs.value.estimated_clicks);
+                    const leads = roiOutputs.value.estimated_leads;
+                    const customers = roiOutputs.value.estimated_customers;
+                    const revenue = roiOutputs.value.estimated_revenue;
+                    const profit = roiOutputs.value.estimated_profit;
+                    return {
+                        inputs: [
+                            { label: 'Månedligt annoncebudget', value: formatCurrency(inputs.budget), note: 'Hvor meget vil du bruge på Google Ads?', calc: '' },
+                            { label: 'Fortjeneste pr. kunde', value: formatCurrency(inputs.profit_per_customer), note: 'Hvad tjener du på én kunde?', calc: '' },
+                            { label: 'Lukningsrate %', value: inputs.close_rate + '%', note: 'Hvor mange % af dine henvendelser bliver til salg?', calc: '' },
+                        ],
+                        estimates: [
+                            { label: 'Pris pr. klik (CPC)', value: formatCurrency(estimates.cpc), note: 'Hvad koster ét klik på din annonce?', calc: '' },
+                            { label: 'Website konverteringsrate %', value: estimates.website_conv_rate + '%', note: 'Hvor mange % af besøgende udfylder formularen?', calc: '' },
+                        ],
+                        results: [
+                            { label: 'Estimerede klik/måned', value: clicks, note: 'Hvor mange klik kan du købe for dit budget?', calc: `${formatCurrency(inputs.budget)} ÷ ${formatCurrency(estimates.cpc)} pr. klik = ${clicks} klik` },
+                            { label: 'Estimerede leads/måned', value: leads, note: 'Hvor mange udfylder kontaktformularen?', calc: `${clicks} klik × ${estimates.website_conv_rate}% = ${leads} leads` },
+                            { label: 'Estimerede kunder/måned', value: customers, note: 'Hvor mange leads bliver til betalende kunder?', calc: `${leads} leads × ${inputs.close_rate}% = ${customers} kunder` },
+                            { label: 'Estimeret omsætning/måned', value: formatCurrency(revenue), note: 'Hvad tjener du på disse kunder?', calc: `${customers} kunder × ${formatCurrency(inputs.profit_per_customer)} = ${formatCurrency(revenue)}` },
+                            { label: 'Estimeret profit/måned', value: formatCurrency(profit), note: 'Din fortjeneste efter annonceudgifter', calc: `${formatCurrency(revenue)} − ${formatCurrency(inputs.budget)} = ${formatCurrency(profit)}` },
+                            { label: 'ROAS (Return on Ad Spend)', value: roiOutputs.value.roas, note: 'For hver 1 kr brugt, får du X kr tilbage', calc: `${formatCurrency(revenue)} ÷ ${formatCurrency(inputs.budget)} = ${roiOutputs.value.roas}` },
+                        ]
+                    };
+                });
+
+                const groupedCampaigns = computed(() => {
+                    const groups = {};
+                    campaignStructure.forEach(item => {
+                        const campaign = item.Campaign || item.campaign;
+                        const adGroup = item['Ad Group'] || item.ad_group;
+                        const keyword = item.Keyword || item.keyword;
+                        if (!groups[campaign]) {
+                            groups[campaign] = {};
+                        }
+                        if (!groups[campaign][adGroup]) {
+                            groups[campaign][adGroup] = [];
+                        }
+                        if (!groups[campaign][adGroup].includes(keyword)) {
+                            groups[campaign][adGroup].push(keyword);
+                        }
+                    });
+                    return groups;
+                });
+
+                return {
+                    currentTab,
+                    keywordSearch,
+                    categoryFilter,
+                    clientName,
+                    clientLogo,
+                    clientTagline,
+                    clientWebsite,
+                    clientCTA,
+                    summarySubtitle,
+                    executiveSummary,
+                    inputs,
+                    estimates,
+                    roiOutputs,
+                    roiTable,
+                    keywords,
+                    filteredKeywords,
+                    uniqueCategories,
+                    maxVolume,
+                    groupedCampaigns,
+                    ads,
+                    formatCurrency,
+                    formatBid,
+                    getCompetitionClass,
+                    formatCampaignName,
+                    formatHeadline
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>

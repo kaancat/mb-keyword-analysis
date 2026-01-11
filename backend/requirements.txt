@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+google-ads
+google-cloud-bigquery
+pandas
+python-dotenv
+openai
+google-auth-oauthlib
+uvicorn
+httpx
+chromadb
+tiktoken
+google-api-python-client
+google-analytics-data
+pydantic

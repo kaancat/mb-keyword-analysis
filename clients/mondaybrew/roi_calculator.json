@@ -1,0 +1,119 @@
+{
+  "client": "Monday Brew",
+  "currency": "DKK",
+  "budget_monthly": 7500,
+  "analysis_date": "2026-01-11",
+
+  "inputs": {
+    "monthly_ad_spend": 7500,
+    "average_cpc_estimate": 45,
+    "estimated_monthly_clicks": 167,
+    "landing_page_conversion_rate": 0.04,
+    "estimated_monthly_leads": 7,
+    "sales_close_rate": 0.25,
+    "estimated_monthly_customers": 2,
+    "average_project_value": 35000,
+    "estimated_monthly_revenue": 70000
+  },
+
+  "calculations": {
+    "cost_per_lead": 1071,
+    "cost_per_customer": 3750,
+    "monthly_roas": 9.33,
+    "monthly_profit": 62500,
+    "break_even_conversion_rate": 0.01,
+    "break_even_close_rate": 0.06
+  },
+
+  "sensitivity_analysis": {
+    "conservative": {
+      "conversion_rate": 0.03,
+      "close_rate": 0.20,
+      "monthly_leads": 5,
+      "monthly_customers": 1,
+      "monthly_revenue": 35000,
+      "roas": 4.67
+    },
+    "moderate": {
+      "conversion_rate": 0.04,
+      "close_rate": 0.25,
+      "monthly_leads": 7,
+      "monthly_customers": 2,
+      "monthly_revenue": 70000,
+      "roas": 9.33
+    },
+    "optimistic": {
+      "conversion_rate": 0.05,
+      "close_rate": 0.30,
+      "monthly_leads": 8,
+      "monthly_customers": 2,
+      "monthly_revenue": 70000,
+      "roas": 9.33
+    }
+  },
+
+  "campaign_budget_allocation": {
+    "mb | DA | Search | Google Ads": {
+      "percentage": 25,
+      "monthly_budget": 1875,
+      "rationale": "Core service with high-intent keywords"
+    },
+    "mb | DA | Search | Lead Generation": {
+      "percentage": 25,
+      "monthly_budget": 1875,
+      "rationale": "Direct match to core value proposition"
+    },
+    "mb | DA | Search | Digital Bureau": {
+      "percentage": 20,
+      "monthly_budget": 1500,
+      "rationale": "Generic capture for agency seekers"
+    },
+    "mb | DA | Search | Meta Ads": {
+      "percentage": 10,
+      "monthly_budget": 750,
+      "rationale": "Secondary service offering"
+    },
+    "mb | DA | Search | Websites": {
+      "percentage": 10,
+      "monthly_budget": 750,
+      "rationale": "Konvertering pillar"
+    },
+    "mb | DA | Search | CRM & Automation": {
+      "percentage": 5,
+      "monthly_budget": 375,
+      "rationale": "Technical services, longer sales cycle"
+    },
+    "mb | DA | Search | General Marketing": {
+      "percentage": 5,
+      "monthly_budget": 375,
+      "rationale": "Broad capture terms"
+    }
+  },
+
+  "key_metrics_to_track": [
+    "Cost per lead (CPL) - Target: < 1,500 DKK",
+    "Lead-to-meeting conversion rate - Target: > 50%",
+    "Meeting-to-customer close rate - Target: > 20%",
+    "Cost per customer acquisition (CAC) - Target: < 5,000 DKK",
+    "Search impression share - Target: > 60% for exact match",
+    "Quality Score - Target: > 6 average"
+  ],
+
+  "recommendations": [
+    "Start with exact match keywords for first 30 days to establish baseline",
+    "Add phrase match keywords after 50+ clicks per ad group",
+    "Implement conversion tracking via Google Tag Manager on form submissions and calendar bookings",
+    "Track micro-conversions: page scroll depth, time on page, button clicks",
+    "Review search terms weekly and add negative keywords",
+    "A/B test landing pages after 100 clicks",
+    "Consider remarketing campaign after 1,000 site visitors"
+  ],
+
+  "caveats": [
+    "B2B sales cycles are typically 30-90 days; first-month ROAS will be lower",
+    "CPCs in bureau/agency space can be volatile; budget may need adjustment",
+    "Quality Score optimization takes 2-4 weeks to stabilize",
+    "Conversion tracking must be properly implemented before launch",
+    "These projections assume landing pages are optimized for conversion"
+  ]
+}

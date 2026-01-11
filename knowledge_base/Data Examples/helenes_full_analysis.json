@@ -1,0 +1,126 @@
+{
+  "client": "Helenes Høreklinik",
+  "location": "Valby, Copenhagen",
+  "budget": {
+    "daily_dkk": 120,
+    "monthly_dkk": 3600,
+    "estimated_cpc": 12,
+    "estimated_daily_clicks": 10,
+    "estimated_monthly_clicks": 300
+  },
+  "campaign_structure": {
+    "campaign": "mb | DA | Search | Høreklinik Valby",
+    "ad_groups": [
+      {
+        "name": "Ørevoks Fjernelse | Valby",
+        "intent": "High",
+        "url": "https://heleneshøreklinik.dk/",
+        "keywords": [
+          {
+            "text": "fjernelse af ørevoks",
+            "volume": 1900,
+            "match": "Phrase"
+          },
+          {
+            "text": "ørevoks",
+            "volume": 720,
+            "match": "Phrase"
+          },
+          {
+            "text": "ørevoks rens",
+            "volume": 70,
+            "match": "Phrase"
+          },
+          {
+            "text": "rens øre for ørevoks",
+            "volume": 70,
+            "match": "Exact"
+          },
+          {
+            "text": "rense øre for ørevoks",
+            "volume": 70,
+            "match": "Exact"
+          }
+        ]
+      },
+      {
+        "name": "Høretest | Valby",
+        "intent": "High",
+        "url": "https://heleneshøreklinik.dk/",
+        "keywords": [
+          {
+            "text": "høretest",
+            "volume": 590,
+            "match": "Phrase"
+          },
+          {
+            "text": "gratis høretest",
+            "volume": 140,
+            "match": "Phrase"
+          },
+          {
+            "text": "høre test",
+            "volume": 50,
+            "match": "Phrase"
+          },
+          {
+            "text": "bestil høretest",
+            "volume": 10,
+            "match": "Phrase"
+          },
+          {
+            "text": "høretjek",
+            "volume": 10,
+            "match": "Phrase"
+          }
+        ]
+      },
+      {
+        "name": "Høreapparat | Valby",
+        "intent": "High",
+        "url": "https://heleneshøreklinik.dk/",
+        "keywords": [
+          {
+            "text": "nyt høreapparat",
+            "volume": 40,
+            "match": "Phrase"
+          },
+          {
+            "text": "vedligeholdelse af høreapparater",
+            "volume": 10,
+            "match": "Exact"
+          }
+        ]
+      },
+      {
+        "name": "Ørepropper | Valby",
+        "intent": "Medium",
+        "url": "https://heleneshøreklinik.dk/",
+        "keywords": [
+          {
+            "text": "speciallavede ørepropper",
+            "volume": 40,
+            "match": "Phrase"
+          },
+          {
+            "text": "special ørepropper",
+            "volume": 10,
+            "match": "Phrase"
+          }
+        ]
+      }
+    ]
+  },
+  "total_keywords": 14,
+  "total_volume": 3730,
+  "negative_keywords": [
+    "online",
+    "hjemme",
+    "i hjemmet",
+    "matas",
+    "selv",
+    "gratis",
+    "billig",
+    "billige"
+  ]
+}

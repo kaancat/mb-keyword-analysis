@@ -1,0 +1,26 @@
+# Environment
+.env
+
+# ChromaDB (generated locally)
+**/chroma_db/
+.venv/
+.venv-mcp/
+__pycache__/
+*.pyc
+
+# Sensitive files
+service-account-key.json
+*.key
+
+# IDE
+.DS_Store
+.cursor/
+.vscode/
+
+# Generated output
+output/
+reports/
+*.log
+
+# Temporary
+.playwright-mcp/

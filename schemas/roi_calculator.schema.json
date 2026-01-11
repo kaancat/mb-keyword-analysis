@@ -1,0 +1,193 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Tab 4: ROI Calculator",
+    "description": "Schema for the 'ROI Beregner' tab v3. Simplified for service businesses with whole number percentages (65 = 65%) and ROAS as factor (2.94x). Uses 4-column layout with section-specific headers: Input sections use 'Hvad betyder det?' in column C, Results section uses 'Forklaring' + 'Beregning' columns.",
+    "type": "object",
+    "required": ["client_inputs"],
+    "properties": {
+        "client_inputs": {
+            "type": "object",
+            "description": "Business metrics provided by the client. Only budget and profit_per_customer are required.",
+            "required": ["budget", "profit_per_customer"],
+            "properties": {
+                "budget": {
+                    "type": "number",
+                    "description": "Månedligt annoncebudget - Monthly ad budget in DKK",
+                    "minimum": 0
+                },
+                "profit_per_customer": {
+                    "type": "number",
+                    "description": "Fortjeneste pr. kunde - What they earn per customer in DKK.",
+                    "minimum": 0
+                },
+                "close_rate": {
+                    "type": ["number", "null"],
+                    "description": "Lukningsrate - Percentage of leads that become customers. Whole number (15 = 15%). Default: 15",
+                    "default": 15,
+                    "minimum": 0,
+                    "maximum": 100
+                }
+            }
+        },
+        "campaign_estimates": {
+            "type": "object",
+            "description": "Estimated campaign metrics. All fields have defaults if not provided.",
+            "properties": {
+                "cpc": {
+                    "type": ["number", "null"],
+                    "description": "Estimeret CPC - Estimated cost per click in DKK. Default: 8",
+                    "default": 8,
+                    "minimum": 0
+                },
+                "website_conv_rate": {
+                    "type": ["number", "null"],
+                    "description": "Website konverteringsrate - Percentage of visitors who fill form. Whole number (3 = 3%). Default: 3",
+                    "default": 3,
+                    "minimum": 0,
+                    "maximum": 100
+                }
+            }
+        },
+        "calculated_outputs": {
+            "type": "object",
+            "description": "Auto-calculated results. Funnel: visitors → [conv_rate] → leads → [close_rate] → customers",
+            "properties": {
+                "estimated_clicks": {
+                    "type": "number",
+                    "description": "Estimerede klik/måned. Formula: budget ÷ CPC"
+                },
+                "estimated_leads": {
+                    "type": "number",
+                    "description": "Estimerede leads/måned. Formula: clicks × (conv_rate / 100)"
+                },
+                "estimated_customers": {
+                    "type": "number",
+                    "description": "Estimerede kunder/måned. Formula: leads × (close_rate / 100)"
+                },
+                "estimated_revenue": {
+                    "type": "number",
+                    "description": "Estimeret omsætning/måned. Formula: customers × profit_per_customer"
+                },
+                "estimated_profit": {
+                    "type": "number",
+                    "description": "Estimeret profit/måned. Formula: revenue − budget"
+                },
+                "roas": {
+                    "type": "string",
+                    "description": "ROAS as factor (e.g., '1.33x'). Formula: revenue ÷ budget"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Visual status: ✅ Profitable, ❌ Ikke profitable, or ⚠️ Udfyld budget og fortjeneste"
+                }
+            }
+        }
+    },
+    "defaults": {
+        "close_rate": 15,
+        "cpc": 8,
+        "website_conv_rate": 3
+    },
+    "google_sheets_formulas": {
+        "description": "v3 formulas with whole number percentages (divided by 100 in formulas). Layout: B5=budget, B6=profit_per_customer, B7=close_rate, B10=cpc, B11=conv_rate",
+        "B14_clicks": "=IF(B5=\"\", \"-\", ROUND(B5 / IF(B10=\"\", 8, B10), 0))",
+        "B15_leads": "=IF(B5=\"\", \"-\", ROUND(B14 * (IF(B11=\"\", 3, B11) / 100), 1))",
+        "B16_customers": "=IF(B5=\"\", \"-\", ROUND(B15 * (IF(B7=\"\", 15, B7) / 100), 1))",
+        "B17_revenue": "=IF(OR(B5=\"\", B6=\"\"), \"-\", ROUND(B16 * B6, 0))",
+        "B18_profit": "=IF(OR(B5=\"\", B6=\"\"), \"-\", B17 - B5)",
+        "B19_roas": "=IF(OR(B5=\"\", B6=\"\"), \"-\", ROUND(B17 / B5, 2) & \"x\")",
+        "B21_status": "=IF(OR(B5=\"\", B6=\"\"), \"⚠️ Udfyld budget og fortjeneste\", IF(B18>0, \"✅ Profitable\", \"❌ Ikke profitable\"))"
+    },
+    "column_notes": {
+        "description": "Notes for each row in Column C",
+        "input_rows": {
+            "B5_budget": "",
+            "B6_profit": "",
+            "B7_close_rate": "Leads der bliver til kunder",
+            "B10_cpc": "",
+            "B11_conv_rate": "Besøgende der udfylder formular"
+        },
+        "calculated_rows": {
+            "B14_clicks": "Budget ÷ CPC",
+            "B15_leads": "Klik × konverteringsrate",
+            "B16_customers": "Leads × lukningsrate",
+            "B17_revenue": "Kunder × fortjeneste pr. kunde",
+            "B18_profit": "Omsætning − budget",
+            "B19_roas": "Omsætning ÷ budget"
+        }
+    },
+    "layout": {
+        "description": "4-column client-friendly layout with section-specific headers",
+        "columns_input_sections": {
+            "A": "Label",
+            "B": "Værdi",
+            "C": "Hvad betyder det?",
+            "D": "(empty)"
+        },
+        "columns_results_section": {
+            "A": "Label",
+            "B": "Værdi",
+            "C": "Forklaring",
+            "D": "Beregning"
+        },
+        "sections": {
+            "DINE_TAL": {
+                "emoji": "📊",
+                "header_color": "blue",
+                "column_c_header": "Hvad betyder det?",
+                "rows": ["budget", "profit_per_customer", "close_rate"]
+            },
+            "KAMPAGNE_ESTIMATER": {
+                "emoji": "📈",
+                "header_color": "teal",
+                "column_c_header": "Hvad betyder det?",
+                "rows": ["cpc", "website_conv_rate"]
+            },
+            "BEREGNEDE_RESULTATER": {
+                "emoji": "🧮",
+                "header_color": "green",
+                "column_c_header": "Forklaring",
+                "column_d_header": "Beregning",
+                "rows": ["clicks", "leads", "customers", "revenue", "profit", "roas", "status"]
+            }
+        },
+        "cell_colors": {
+            "input_cells": "yellow (editable)",
+            "output_cells": "light green (calculated)"
+        },
+        "dynamic_formulas_example": {
+            "D_clicks": "3500 kr ÷ 11 kr pr. klik = 318 klik",
+            "D_leads": "318 klik × 5% = 15.9 leads",
+            "D_customers": "15.9 leads × 65% = 10.3 kunder"
+        }
+    },
+    "golden_example": {
+        "client": "Guld Design",
+        "description": "Service business example from screenshot - v3 format with 4-column layout",
+        "inputs": {
+            "budget": 3500,
+            "profit_per_customer": 1000,
+            "close_rate": 65,
+            "cpc": 11,
+            "website_conv_rate": 5
+        },
+        "outputs": {
+            "estimated_clicks": 318,
+            "estimated_leads": 15.9,
+            "estimated_customers": 10.3,
+            "estimated_revenue": 10300,
+            "estimated_profit": 6800,
+            "roas": "2.94x",
+            "status": "✅ Profitable"
+        },
+        "column_d_examples": [
+            "3500 kr ÷ 11 kr pr. klik = 318 klik",
+            "318 klik × 5% = 15.9 leads",
+            "15.9 leads × 65% = 10.3 kunder",
+            "10.3 kunder × 1000 kr = 10300 kr",
+            "10300 kr − 3500 kr = 6800 kr",
+            "10300 kr ÷ 3500 kr = 2.94x"
+        ],
+        "status_message": "Du tjener penge på Google Ads! 🎉"
+    }
+}

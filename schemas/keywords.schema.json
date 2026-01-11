@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Google Ads Keyword Analysis Deliverable",
+  "description": "Schema for the 'Keyword Analysis' tab. Combines Research Data (Volume, CPC) with Campaign Structure.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "Campaign",
+      "Ad Group",
+      "Keyword",
+      "Match Type",
+      "Avg. Monthly Searches",
+      "Competition",
+      "Top of page bid (low range)",
+      "Top of page bid (high range)"
+    ],
+    "properties": {
+      "Campaign": {
+        "type": "string",
+        "description": "Campaign name (e.g., 'mb | DA | Search | Generic').",
+        "pattern": "^mb \\| [A-Z]{2} \\| (Search|Display|Video|Shopping|PMax) \\| .+$"
+      },
+      "Ad Group": {
+        "type": "string",
+        "description": "Ad Group name (e.g., 'Theme | Qualifier')."
+      },
+      "Keyword": {
+        "type": "string",
+        "description": "The target keyword."
+      },
+      "Match Type": {
+        "type": "string",
+        "enum": [
+          "Exact",
+          "Phrase",
+          "Broad"
+        ],
+        "description": "Match type."
+      },
+      "Avg. Monthly Searches": {
+        "type": [
+          "integer",
+          "string"
+        ],
+        "description": "Search volume from Keyword Planner."
+      },
+      "YoY Change": {
+        "type": [
+          "string",
+          "number",
+          "null"
+        ],
+        "description": "Year-over-year change percentage."
+      },
+      "Competition": {
+        "type": "string",
+        "enum": [
+          "Low",
+          "Medium",
+          "High",
+          "Unspecified",
+          "-"
+        ],
+        "description": "Competition level."
+      },
+      "Top of page bid (low range)": {
+        "type": [
+          "string",
+          "number"
+        ],
+        "description": "Low bid estimate (e.g., 'DKK 4.50')."
+      },
+      "Top of page bid (high range)": {
+        "type": [
+          "string",
+          "number"
+        ],
+        "description": "High bid estimate (e.g., 'DKK 12.00')."
+      }
+    }
+  }
+}

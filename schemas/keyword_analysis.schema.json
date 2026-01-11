@@ -1,0 +1,79 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Tab 1: Keyword Analysis",
+    "description": "Schema for the 'Keyword Analysis' tab. Contains raw research data.",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "Keyword",
+            "Avg. Monthly Searches",
+            "Competition",
+            "Category"
+        ],
+        "properties": {
+            "Keyword": {
+                "type": "string",
+                "description": "The keyword text."
+            },
+            "Avg. Monthly Searches": {
+                "type": [
+                    "integer",
+                    "string"
+                ],
+                "description": "Estimated monthly search volume."
+            },
+            "YoY Change": {
+                "type": [
+                    "string",
+                    "number",
+                    "null"
+                ],
+                "description": "Year-over-year change (e.g., '+10%', '-5%')."
+            },
+            "Competition": {
+                "type": "string",
+                "enum": [
+                    "Low",
+                    "Medium",
+                    "High",
+                    "Unspecified",
+                    "-"
+                ],
+                "description": "Competition level."
+            },
+            "Top of page bid (low range)": {
+                "type": [
+                    "string",
+                    "number"
+                ],
+                "description": "Low bid estimate."
+            },
+            "Top of page bid (high range)": {
+                "type": [
+                    "string",
+                    "number"
+                ],
+                "description": "High bid estimate."
+            },
+            "Category": {
+                "type": "string",
+                "description": "Thematic grouping for the keyword."
+            },
+            "Intent": {
+                "type": "string",
+                "enum": [
+                    "High",
+                    "Medium",
+                    "Low",
+                    "Unspecified"
+                ],
+                "description": "Commercial intent level."
+            },
+            "Include": {
+                "type": "boolean",
+                "description": "Whether to include this keyword in the final campaign."
+            }
+        }
+    }
+}

@@ -1,0 +1,431 @@
+{
+  "name": "NMD Law Group - Offline Conversions",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nmd-form-submission",
+        "options": {}
+      },
+      "id": "webhook-ghl-form",
+      "name": "GHL Form Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "nmd-form-submission"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nmd-pipeline-change",
+        "options": {}
+      },
+      "id": "webhook-ghl-pipeline",
+      "name": "GHL Pipeline Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        250,
+        500
+      ],
+      "webhookId": "nmd-pipeline-change"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and normalize form data from GHL webhook\nconst input = $input.first().json;\n\n// GHL sends data in various formats - normalize it\nconst formData = {\n  // Contact info\n  email: input.email || input.contact?.email || input.customData?.email || '',\n  phone: input.phone || input.contact?.phone || input.customData?.phone || '',\n  firstName: input.firstName || input.first_name || input.contact?.firstName || '',\n  lastName: input.lastName || input.last_name || input.contact?.lastName || '',\n  fullName: input.full_name || input.name || `${input.firstName || ''} ${input.lastName || ''}`.trim(),\n  \n  // Tracking identifiers\n  gclid: input.gclid || input.customData?.gclid || input.tags?.gclid || '',\n  utmSource: input.utm_source || input.customData?.utm_source || '',\n  utmMedium: input.utm_medium || input.customData?.utm_medium || '',\n  utmCampaign: input.utm_campaign || input.customData?.utm_campaign || '',\n  \n  // GHL specific\n  contactId: input.contact_id || input.contactId || input.id || '',\n  locationId: input.location_id || input.locationId || '',\n  formId: input.form_id || input.formId || '',\n  formName: input.form_name || input.formName || '',\n  \n  // Timestamps\n  submittedAt: input.dateAdded || input.created_at || new Date().toISOString(),\n  \n  // Page info\n  pageUrl: input.page_url || input.customData?.page_url || '',\n  \n  // Raw data for debugging\n  rawPayload: JSON.stringify(input)\n};\n\n// Generate a unique event ID for deduplication\nformData.eventId = `nmd_lead_${formData.contactId || Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\n\n// Normalize phone to E.164 (Danish format)\nif (formData.phone) {\n  let digits = formData.phone.replace(/\\D/g, '');\n  if (digits.length === 8) {\n    formData.phoneE164 = `+45${digits}`;\n  } else if (digits.startsWith('45') && digits.length === 10) {\n    formData.phoneE164 = `+${digits}`;\n  } else {\n    formData.phoneE164 = digits.length > 8 ? `+${digits}` : formData.phone;\n  }\n}\n\n// Hash email for Enhanced Conversions (SHA256)\nif (formData.email) {\n  const crypto = require('crypto');\n  formData.hashedEmail = crypto.createHash('sha256')\n    .update(formData.email.toLowerCase().trim())\n    .digest('hex');\n}\n\n// Hash phone for Enhanced Conversions\nif (formData.phoneE164) {\n  const crypto = require('crypto');\n  formData.hashedPhone = crypto.createHash('sha256')\n    .update(formData.phoneE164)\n    .digest('hex');\n}\n\nreturn { json: formData };"
+      },
+      "id": "normalize-form-data",
+      "name": "Normalize Form Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        470,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract pipeline change data from GHL\nconst input = $input.first().json;\n\nconst pipelineData = {\n  // Contact info\n  email: input.email || input.contact?.email || '',\n  phone: input.phone || input.contact?.phone || '',\n  contactId: input.contact_id || input.contactId || '',\n  \n  // Pipeline info\n  pipelineId: input.pipeline_id || input.pipelineId || '',\n  pipelineName: input.pipeline_name || input.pipelineName || '',\n  stageId: input.stage_id || input.stageId || '',\n  stageName: input.stage_name || input.stageName || '',\n  previousStageId: input.previous_stage_id || '',\n  previousStageName: input.previous_stage_name || '',\n  \n  // Opportunity data\n  opportunityId: input.opportunity_id || input.opportunityId || '',\n  opportunityName: input.opportunity_name || input.opportunityName || '',\n  monetaryValue: parseFloat(input.monetary_value || input.monetaryValue || 0),\n  \n  // Tracking (should be stored on contact)\n  gclid: input.gclid || input.customData?.gclid || input.contact?.customField?.gclid || '',\n  \n  // Timestamps\n  changedAt: input.dateUpdated || input.updated_at || new Date().toISOString(),\n  \n  // Event ID for deduplication\n  eventId: `nmd_qualified_${input.contact_id || Date.now()}_${Math.random().toString(36).substr(2, 9)}`\n};\n\n// Determine if this is a \"qualified\" stage\n// Customize these stage names based on NMD's actual pipeline\nconst qualifiedStages = [\n  'qualified',\n  'qualified lead',\n  'consultation booked',\n  'consultation completed',\n  'won',\n  'closed won',\n  'client'\n];\n\npipelineData.isQualified = qualifiedStages.some(\n  stage => pipelineData.stageName.toLowerCase().includes(stage.toLowerCase())\n);\n\n// Hash identifiers\nif (pipelineData.email) {\n  const crypto = require('crypto');\n  pipelineData.hashedEmail = crypto.createHash('sha256')\n    .update(pipelineData.email.toLowerCase().trim())\n    .digest('hex');\n}\n\nreturn { json: pipelineData };"
+      },
+      "id": "normalize-pipeline-data",
+      "name": "Normalize Pipeline Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        470,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-gclid",
+              "leftValue": "={{ $json.gclid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-has-gclid",
+      "name": "Has GCLID?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        690,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-qualified",
+              "leftValue": "={{ $json.isQualified }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-is-qualified",
+      "name": "Is Qualified?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        690,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://googleads.googleapis.com/v17/customers/7562650658:uploadClickConversions",
+        "authentication": "oAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "developer-token",
+              "value": "={{ $env.GOOGLE_ADS_DEVELOPER_TOKEN }}"
+            },
+            {
+              "name": "login-customer-id",
+              "value": "8959543272"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"conversions\": [\n    {\n      \"gclid\": \"{{ $json.gclid }}\",\n      \"conversionAction\": \"customers/7562650658/conversionActions/7403121584\",\n      \"conversionDateTime\": \"{{ $json.submittedAt.replace('T', ' ').substring(0, 19) }}+01:00\",\n      \"conversionValue\": 500,\n      \"currencyCode\": \"DKK\",\n      \"userIdentifiers\": [\n        {\n          \"hashedEmail\": \"{{ $json.hashedEmail }}\"\n        },\n        {\n          \"hashedPhoneNumber\": \"{{ $json.hashedPhone }}\"\n        }\n      ]\n    }\n  ],\n  \"partialFailure\": true\n}",
+        "options": {}
+      },
+      "id": "google-ads-lead-conversion",
+      "name": "Google Ads - Lead Conversion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        910,
+        200
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "GOOGLE_OAUTH_CREDENTIAL_ID",
+          "name": "Google Ads OAuth"
+        }
+      },
+      "notes": "Conversion Action ID: 7403121584"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://googleads.googleapis.com/v17/customers/7562650658:uploadClickConversions",
+        "authentication": "oAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "developer-token",
+              "value": "={{ $env.GOOGLE_ADS_DEVELOPER_TOKEN }}"
+            },
+            {
+              "name": "login-customer-id",
+              "value": "8959543272"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"conversions\": [\n    {\n      \"gclid\": \"{{ $json.gclid }}\",\n      \"conversionAction\": \"customers/7562650658/conversionActions/7403121827\",\n      \"conversionDateTime\": \"{{ $json.changedAt.replace('T', ' ').substring(0, 19) }}+01:00\",\n      \"conversionValue\": {{ $json.monetaryValue > 0 ? $json.monetaryValue : 2000 }},\n      \"currencyCode\": \"DKK\",\n      \"userIdentifiers\": [\n        {\n          \"hashedEmail\": \"{{ $json.hashedEmail }}\"\n        }\n      ]\n    }\n  ],\n  \"partialFailure\": true\n}",
+        "options": {}
+      },
+      "id": "google-ads-qualified-conversion",
+      "name": "Google Ads - Qualified Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        910,
+        400
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "GOOGLE_OAUTH_CREDENTIAL_ID",
+          "name": "Google Ads OAuth"
+        }
+      },
+      "notes": "Conversion Action ID: 7403121827"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.google-analytics.com/mp/collect",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "measurement_id",
+              "value": "G-GMJZFFYVF7"
+            },
+            {
+              "name": "api_secret",
+              "value": "={{ $env.GA4_API_SECRET }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"client_id\": \"{{ $json.contactId || 'server_' + Date.now() }}\",\n  \"events\": [\n    {\n      \"name\": \"generate_lead\",\n      \"params\": {\n        \"event_id\": \"{{ $json.eventId }}\",\n        \"form_id\": \"{{ $json.formId }}\",\n        \"form_name\": \"{{ $json.formName }}\",\n        \"page_url\": \"{{ $json.pageUrl }}\",\n        \"gclid\": \"{{ $json.gclid }}\",\n        \"utm_source\": \"{{ $json.utmSource }}\",\n        \"utm_medium\": \"{{ $json.utmMedium }}\",\n        \"utm_campaign\": \"{{ $json.utmCampaign }}\",\n        \"value\": 500,\n        \"currency\": \"DKK\",\n        \"engagement_time_msec\": 1000\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "ga4-lead-event",
+      "name": "GA4 - Lead Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        910,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.google-analytics.com/mp/collect",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "measurement_id",
+              "value": "G-GMJZFFYVF7"
+            },
+            {
+              "name": "api_secret",
+              "value": "={{ $env.GA4_API_SECRET }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"client_id\": \"{{ $json.contactId || 'server_' + Date.now() }}\",\n  \"events\": [\n    {\n      \"name\": \"qualified_lead\",\n      \"params\": {\n        \"event_id\": \"{{ $json.eventId }}\",\n        \"pipeline_name\": \"{{ $json.pipelineName }}\",\n        \"stage_name\": \"{{ $json.stageName }}\",\n        \"gclid\": \"{{ $json.gclid }}\",\n        \"value\": {{ $json.monetaryValue > 0 ? $json.monetaryValue : 2000 }},\n        \"currency\": \"DKK\",\n        \"engagement_time_msec\": 1000\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "ga4-qualified-event",
+      "name": "GA4 - Qualified Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1130,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Enhanced Conversions fallback - when no GCLID, use hashed identifiers\nconst data = $input.first().json;\n\n// Log for debugging\nconsole.log('Processing lead without GCLID:', {\n  email: data.email ? 'present' : 'missing',\n  phone: data.phone ? 'present' : 'missing',\n  contactId: data.contactId\n});\n\n// For Enhanced Conversions without GCLID, we rely on user identifiers\n// Google will try to match based on hashed email/phone\nreturn {\n  json: {\n    ...data,\n    useEnhancedConversions: true,\n    note: 'No GCLID - using Enhanced Conversions with hashed identifiers'\n  }\n};"
+      },
+      "id": "enhanced-conversions-fallback",
+      "name": "Enhanced Conversions Fallback",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        910,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://googleads.googleapis.com/v17/customers/7562650658:uploadClickConversions",
+        "authentication": "oAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "developer-token",
+              "value": "={{ $env.GOOGLE_ADS_DEVELOPER_TOKEN }}"
+            },
+            {
+              "name": "login-customer-id",
+              "value": "8959543272"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"conversions\": [\n    {\n      \"conversionAction\": \"customers/7562650658/conversionActions/7403121584\",\n      \"conversionDateTime\": \"{{ $json.submittedAt.replace('T', ' ').substring(0, 19) }}+01:00\",\n      \"conversionValue\": 500,\n      \"currencyCode\": \"DKK\",\n      \"userIdentifiers\": [\n        {\n          \"hashedEmail\": \"{{ $json.hashedEmail }}\"\n        },\n        {\n          \"hashedPhoneNumber\": \"{{ $json.hashedPhone }}\"\n        }\n      ]\n    }\n  ],\n  \"partialFailure\": true\n}",
+        "options": {}
+      },
+      "id": "google-ads-enhanced-conversion",
+      "name": "Google Ads - Enhanced Conversion (No GCLID)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1130,
+        300
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "GOOGLE_OAUTH_CREDENTIAL_ID",
+          "name": "Google Ads OAuth"
+        }
+      },
+      "notes": "Uses hashed email/phone when GCLID is not available"
+    }
+  ],
+  "connections": {
+    "GHL Form Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Form Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GHL Pipeline Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Pipeline Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Form Data": {
+      "main": [
+        [
+          {
+            "node": "Has GCLID?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GA4 - Lead Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Pipeline Data": {
+      "main": [
+        [
+          {
+            "node": "Is Qualified?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has GCLID?": {
+      "main": [
+        [
+          {
+            "node": "Google Ads - Lead Conversion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enhanced Conversions Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Qualified?": {
+      "main": [
+        [
+          {
+            "node": "Google Ads - Qualified Lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GA4 - Qualified Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Enhanced Conversions Fallback": {
+      "main": [
+        [
+          {
+            "node": "Google Ads - Enhanced Conversion (No GCLID)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "NMD Law Group"
+    },
+    {
+      "name": "Offline Conversions"
+    },
+    {
+      "name": "MondayBrew"
+    }
+  ]
+}

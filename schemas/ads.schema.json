@@ -1,0 +1,118 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Google Ads RSA Copy Deliverable",
+    "description": "Schema for the 'Ads' tab. Based on Haus20/Spacefinder format.",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "Campaign",
+            "Ad Group",
+            "Final URL",
+            "Headline 1",
+            "Headline 2",
+            "Headline 3",
+            "Headline 4",
+            "Headline 5",
+            "Description 1",
+            "Description 2"
+        ],
+        "properties": {
+            "Campaign": {
+                "type": "string",
+                "pattern": "^mb \\| [A-Z]{2} \\| (Search|Display|Video|Shopping|PMax) \\| .+$"
+            },
+            "Ad Group": {
+                "type": "string"
+            },
+            "Final URL": {
+                "type": "string",
+                "format": "uri"
+            },
+            "Path 1": {
+                "type": "string",
+                "maxLength": 15
+            },
+            "Path 2": {
+                "type": "string",
+                "maxLength": 15
+            },
+            "Headline 1": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 2": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 3": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 4": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 5": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 6": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 7": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 8": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 9": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 10": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 11": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 12": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 13": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 14": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Headline 15": {
+                "type": "string",
+                "maxLength": 30
+            },
+            "Description 1": {
+                "type": "string",
+                "maxLength": 90
+            },
+            "Description 2": {
+                "type": "string",
+                "maxLength": 90
+            },
+            "Description 3": {
+                "type": "string",
+                "maxLength": 90
+            },
+            "Description 4": {
+                "type": "string",
+                "maxLength": 90
+            }
+        }
+    }
+}

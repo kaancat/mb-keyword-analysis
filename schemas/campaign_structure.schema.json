@@ -1,0 +1,45 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Tab 2: Campaign Structure",
+    "description": "Schema for the 'Campaign Structure' tab. Defines the hierarchy.",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "Campaign",
+            "Ad Group",
+            "Keyword",
+            "Match Type",
+            "Final URL"
+        ],
+        "properties": {
+            "Campaign": {
+                "type": "string",
+                "description": "Campaign name following MB naming convention.",
+                "pattern": "^mb \\| [A-Z]{2} \\| (Search|Display|Video|Shopping|PMax) \\| .+$"
+            },
+            "Ad Group": {
+                "type": "string",
+                "description": "Ad Group name (Service | Location)."
+            },
+            "Keyword": {
+                "type": "string",
+                "description": "The keyword text."
+            },
+            "Match Type": {
+                "type": "string",
+                "enum": [
+                    "Exact",
+                    "Phrase",
+                    "Broad"
+                ],
+                "description": "Match type."
+            },
+            "Final URL": {
+                "type": "string",
+                "format": "uri",
+                "description": "Landing page URL."
+            }
+        }
+    }
+}
