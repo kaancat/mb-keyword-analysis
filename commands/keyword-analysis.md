@@ -67,18 +67,19 @@ Extract client name from the website URL (e.g., `aeflyt.dk` → `clients/aeflyt/
    - Example: Wedding dress shop that does NOT do party dresses
    - Example: Copenhagen-only business, NOT national
 
-4. **Gather constraints from user** using AskUserQuestion:
-   - Budget (daily or monthly)?
-   - Geographic targeting (city, radius, national)?
-   - Language (Danish, Norwegian, Swedish, English)?
-   - Any specific focus areas?
-   - Any exclusions or things to avoid?
-
-5. **Service Validation Questions** (MANDATORY - always ask):
-   - Q9: List ALL services you want to advertise via Google Ads. Be specific - not "marketing" but "Google Ads", "Facebook Ads", etc.
-   - Q10: Any services you DON'T want to advertise, or services people might search for that you explicitly DON'T provide?
-
-   Store answers as `$SERVICES_TO_ADVERTISE` and `$SERVICES_NOT_TO_ADVERTISE` for validation in Phase 3.
+4. **Gather discovery information from user** using AskUserQuestion:
+   - What does a typical customer spend (first purchase or annual value)?
+   - Which 1-3 services should Google Ads focus on?
+   - What is the monthly Google Ads budget?
+   - What geographic area should we target (city, radius, national)?
+   - What language (Danish, Norwegian, Swedish, English)?
+   - What counts as a successful conversion (form, call, purchase, demo)?
+   - Have you run Google Ads before, and what happened?
+   - Who do you actually lose customers to (competitors)?
+   - Is there anything we should NOT target (services, locations, customer types)?
+   - Any meeting notes, transcripts, or additional context?
+   - List ALL services you want to advertise via Google Ads (be specific)?
+   - Any services you DON'T want to advertise or don't offer?
 
 ### Output Artifact: `website_content.md`
 
@@ -99,8 +100,8 @@ Before proceeding to Phase 2, verify:
 - [ ] All services/products are documented
 - [ ] User constraints have been gathered
 - [ ] Exclusions are documented
-- [ ] **Q9 answered: Services to advertise listed**
-- [ ] **Q10 answered: Services NOT to advertise listed**
+- [ ] **Services to advertise listed (from AskUserQuestion)**
+- [ ] **Services NOT to advertise listed (from AskUserQuestion)**
 - [ ] **Canonical Service List created with Service IDs**
 
 If any checkbox is incomplete: **STOP. Do not proceed.**
@@ -503,5 +504,5 @@ After all phases complete:
 - Wrong currency (USD instead of DKK)
 - Skipping business understanding phase
 - **Including keywords for services not offered** (e.g., LinkedIn keywords when business only does Google/Meta)
-- **Skipping Q9/Q10 service validation questions**
+- **Skipping service validation questions** (services to advertise / services NOT to advertise)
 - **Not validating keywords against Canonical Service List**
