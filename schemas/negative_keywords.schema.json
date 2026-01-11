@@ -1,0 +1,99 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Negative Keywords",
+    "description": "Schema for the negative_keywords.json deliverable. Contains 3-4 layer negative keyword structure.",
+    "type": "object",
+    "required": [
+        "global",
+        "vertical",
+        "client_specific"
+    ],
+    "properties": {
+        "global": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Layer 1: Cross-industry negative keywords. E.g., 'gratis', 'billig', 'DIY', 'job', 'karriere', 'løn', 'wikipedia', 'hvad er'.",
+            "examples": [
+                ["gratis", "billig", "DIY", "selv", "pdf", "job", "karriere", "løn", "praktik", "uddannelse", "kursus", "hvad er", "wikipedia", "youtube", "reddit"]
+            ]
+        },
+        "vertical": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Layer 2: Industry/vertical-specific negative keywords based on business type.",
+            "examples": [
+                ["consumer", "privat", "home", "student", "freelance"]
+            ]
+        },
+        "client_specific": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Layer 3: Client-specific exclusions from Q7 and Q10. E.g., 'webshop', 'ecommerce' for B2B-only client.",
+            "examples": [
+                ["webshop", "online shop", "e-handel", "ecommerce", "b2c"]
+            ]
+        },
+        "brand_exclusions": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Competitor brand names to exclude (optional). Used to prevent targeting competitor brand searches.",
+            "examples": [
+                ["competitor1", "competitor2"]
+            ]
+        },
+        "campaign_specific": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "description": "Layer 4: Campaign-specific negatives. Prevents cross-campaign confusion. Key is campaign name, value is array of negatives.",
+            "examples": [
+                {
+                    "mb | DA | Search | Google Ads": ["facebook", "instagram", "meta", "linkedin", "tiktok"],
+                    "mb | DA | Search | Meta Ads": ["google", "adwords", "linkedin", "seo"],
+                    "mb | DA | Search | Leadgenerering": ["google ads", "facebook ads", "meta ads"]
+                }
+            ]
+        },
+        "services_not_offered": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Keywords derived from $SERVICES_NOT_OFFERED. These are services the business doesn't offer.",
+            "examples": [
+                ["linkedin", "tiktok", "seo", "email marketing"]
+            ]
+        },
+        "metadata": {
+            "type": "object",
+            "properties": {
+                "generated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when negative keywords were generated."
+                },
+                "source": {
+                    "type": "string",
+                    "description": "Source of negative keywords (e.g., 'Phase 3.5 validation')."
+                },
+                "total_count": {
+                    "type": "integer",
+                    "description": "Total number of unique negative keywords across all layers."
+                }
+            },
+            "description": "Metadata about the negative keyword list."
+        }
+    }
+}

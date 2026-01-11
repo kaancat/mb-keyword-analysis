@@ -246,6 +246,95 @@ Based on business type from Phase 1.
 
 ---
 
+## Service Verification (CRITICAL - Phase 3.5)
+
+**The mondaybrew mistake:** LinkedIn keywords were included because URL-based research returned them, but mondaybrew doesn't offer LinkedIn services.
+
+**The fix:** Validate EVERY keyword against `$CANONICAL_SERVICES` before finalizing.
+
+### Keyword-Service Mapping
+
+For each keyword, determine which canonical service it belongs to:
+
+```python
+def match_keyword_to_service(keyword, canonical_services):
+    """
+    Returns Service_ID if keyword matches a canonical service.
+    Returns None if keyword doesn't match any service.
+    """
+    # Example matching logic:
+    keyword_lower = keyword.lower()
+
+    for service in canonical_services:
+        for variation in service['variations']:
+            if variation.lower() in keyword_lower:
+                return service['id']
+
+    return None  # No match - FLAG FOR REVIEW
+```
+
+### Validation Rules
+
+| Keyword Contains | Maps To | Example |
+|------------------|---------|---------|
+| "google ads", "adwords", "google annoncering" | Google Ads (SVC-001) | "google ads bureau" → SVC-001 |
+| "facebook", "instagram", "meta" | Meta Ads (SVC-002) | "facebook annoncering" → SVC-002 |
+| "linkedin" | LinkedIn Ads | "linkedin marketing" → NO MATCH if not in Q9 |
+| "tiktok" | TikTok Ads | "tiktok bureau" → NO MATCH if not in Q9 |
+| "ecommerce", "webshop" | E-commerce | "ecommerce marketing" → NO MATCH if B2B only |
+
+### Required Output Fields
+
+Add these fields to EVERY keyword in `keyword_analysis.json`:
+
+```json
+{
+  "Keyword": "annoncering på linkedin",
+  "Service_ID": null,
+  "Service_Validation": "UNMATCHED",
+  "Include": false,
+  "Exclusion_Reason": "LinkedIn not in $CANONICAL_SERVICES"
+}
+```
+
+```json
+{
+  "Keyword": "google ads bureau",
+  "Service_ID": "SVC-001",
+  "Service_Validation": "MATCHED",
+  "Include": true,
+  "Exclusion_Reason": null
+}
+```
+
+### Flagging Unmatched Keywords
+
+For ANY keyword where `Service_ID = null`:
+
+1. **Auto-exclude** if keyword clearly matches `$SERVICES_NOT_OFFERED`
+2. **Flag for review** if uncertain
+3. **Present to user** in Phase 3.5 for confirmation
+
+### Cross-Platform Confusion Rules
+
+These are commonly confused but are SEPARATE services:
+
+| Often Confused | Actually Means |
+|----------------|----------------|
+| "Meta Ads" | Facebook + Instagram ONLY |
+| "Social media marketing" | Could be ANY platform - need clarification |
+| "LinkedIn Ads" | LinkedIn ONLY (NOT part of Meta) |
+| "Google Ads" | Google Search + Display + YouTube |
+
+### Quality Gate
+
+Before Phase 3.5:
+- [ ] Every keyword has `Service_ID` assigned (or `null`)
+- [ ] Unmatched keywords are documented
+- [ ] Clear `Exclusion_Reason` for excluded keywords
+
+---
+
 ## Stop Criteria
 
 Stop iterating when ALL conditions are met:
@@ -376,10 +465,10 @@ If average is lower, you have long-tail bloat:
 
 ## Quality Gate Checklist
 
-Before proceeding to Phase 4, verify:
+Before proceeding to Phase 3.5, verify:
 
-- [ ] **Pass 0 (Positioning keywords) completed FIRST**
-- [ ] **At least 10-20% of keywords tagged `Positioning: true`**
+- [ ] **Pass 0 (Positioning keywords) completed FIRST** (if `$POSITIONING_MODE = 'deep'`)
+- [ ] **At least 10-20% of keywords tagged `Positioning: true`** (if `$POSITIONING_MODE = 'deep'`)
 - [ ] Multiple research passes completed (Pass 0 + all 6)
 - [ ] All services have keyword coverage
 - [ ] Buyer journey stages covered (Problem, Solution, Proof, Action)
@@ -388,9 +477,12 @@ Before proceeding to Phase 4, verify:
 - [ ] Total keywords within budget tier max
 - [ ] Average volume per keyword >200 (no long-tail bloat)
 - [ ] Negative keyword lists generated (3 layers)
-- [ ] Category, Intent, Buyer Journey, **Positioning** tags applied
+- [ ] Category, Intent, Buyer Journey tags applied
+- [ ] **`Service_ID` assigned to every keyword**
+- [ ] **Unmatched keywords flagged for Phase 3.5 review**
 
-**If positioning keywords are missing: STOP. Go back to Pass 0.**
+**If positioning keywords are missing (and required): STOP. Go back to Pass 0.**
+**If Service_ID is missing: STOP. Complete service mapping before Phase 3.5.**
 
 ---
 

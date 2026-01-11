@@ -39,10 +39,11 @@ This skill transforms you from a checklist-follower into a **senior PPC speciali
 
 | Phase | Output Artifact(s) | Gate | What It Determines |
 |-------|-------------------|------|-------------------|
-| **0. Discovery Interview** | `discovery_brief.md` | BLOCKS ALL | Budget tier, focus areas, max CPC, strategy direction |
-| 1. Business Deep-Dive | `website_content.md` | BLOCKS Phase 2 | Business type validation, landing page status |
+| **0. Discovery Interview** | `discovery_brief.md` | BLOCKS ALL | Budget tier, focus areas, max CPC, services to advertise |
+| 1. Business Deep-Dive | `website_content.md` | BLOCKS Phase 2 | Canonical services, business type, landing pages |
 | 2. Strategic Analysis | `potential_analysis.md` | BLOCKS Phase 3 | Personas, competitive gaps, campaign segmentation |
-| 3. Keyword Research | `keyword_analysis.json` | BLOCKS Phase 4 | Keywords within budget limits, match types |
+| 3. Keyword Research | `keyword_analysis.json` | BLOCKS Phase 3.5 | Keywords within budget limits, match types |
+| **3.5. Service Validation** | `negative_keywords.json` | BLOCKS Phase 4 | **User confirms keywords match services** |
 | 4. Campaign Structure | `campaign_structure.json` | BLOCKS Phase 5 | Campaigns, ad groups, split/consolidate |
 | 5. Ad Copy | `ad_copy.json` | BLOCKS Phase 6 | Persona-targeted RSAs |
 | 6. ROI Projection | `roi_calculator.json` | BLOCKS Phase 7 | Three scenarios, scaling roadmap |
@@ -214,6 +215,111 @@ query_knowledge(
 
 ---
 
+#### Q9: Explicit Service Enumeration (MANDATORY)
+**Ask:** "List ALL services you want to advertise via Google Ads. Be specific - not 'marketing' but 'Google Ads management', 'Facebook Ads', etc."
+
+**Why it matters:** Creates explicit source of truth for service validation. Prevents wrong keywords (e.g., LinkedIn keywords when they don't offer LinkedIn services).
+
+**Decision it drives:**
+- Canonical service list for keyword validation
+- Campaign structure boundaries
+- Service-to-landing-page mapping
+
+**Store as:** `$SERVICES_TO_ADVERTISE`
+**Used in:** Phase 1 Canonical Service List, Phase 3 keyword validation, Phase 3.5 service verification
+
+---
+
+#### Q10: Explicit Exclusions (MANDATORY)
+**Ask:** "Are there any services you offer but do NOT want to advertise? Or services people might search for that you explicitly DON'T provide?"
+
+**Why it matters:** Catches potential keyword mismatches before research begins. More reliable than hoping to filter them out later.
+
+**Example answers:**
+- "We do websites but don't want to advertise them - focus on Google Ads only"
+- "We don't offer LinkedIn advertising even though it's related to Meta Ads"
+- "We serve B2B only - no consumer marketing"
+
+**Store as:** `$SERVICES_NOT_TO_ADVERTISE`
+**Used in:** Phase 3 keyword exclusion, Phase 3.5 validation, negative keyword generation
+
+---
+
+### Conditional Positioning Questions (Q11-Q13)
+
+**TRIGGER LOGIC:** Ask Q11-Q13 ONLY for complex services that sell outcomes, not commodities.
+
+| Business Type | Ask Q11-Q13? | Rationale |
+|---------------|--------------|-----------|
+| Office hotel, plumber, moving | NO | Commodity search - just need to show up |
+| E-commerce | NO | Product-focused, not outcome-focused |
+| Consultant, coach, agency | YES | Sells outcomes, not ingredients |
+| SaaS | YES | Sells transformation, not features |
+
+**Detection:** Based on business type from quick website scan + Q2 answers.
+
+```
+IF business_type IN ['consultant', 'coach', 'agency', 'SaaS', 'professional_services']:
+    SET $POSITIONING_MODE = 'deep'
+    ASK Q11-Q13
+ELSE:
+    SET $POSITIONING_MODE = 'standard'
+    SKIP Q11-Q13
+```
+
+---
+
+#### Q11: Outcome vs. Ingredient (CONDITIONAL)
+**Only ask if:** `$POSITIONING_MODE = 'deep'`
+
+**Ask:** "What OUTCOME do you deliver to clients? Not the tools you use, but what they actually GET."
+
+**Example answers:**
+- "Filled calendars" (not "Google Ads management")
+- "Predictable customer flow" (not "marketing services")
+- "More revenue without more sales staff" (not "automation")
+
+**Why it matters:** Identifies positioning keywords that differentiate from commodity keywords.
+
+**Store as:** `$OUTCOME_PROMISE`
+**Used in:** Phase 1 positioning-to-keyword translation, Phase 3 Pass 0
+
+---
+
+#### Q12: Positioning Language (CONDITIONAL)
+**Only ask if:** `$POSITIONING_MODE = 'deep'`
+
+**Ask:** "How do you describe what makes you different? What's your one-liner?"
+
+**Example answers:**
+- "We build systems, not campaigns"
+- "One person, not an agency machine"
+- "Infrastructure for growth, not quick fixes"
+
+**Why it matters:** Exact language becomes ad copy differentiation AND keyword research seeds.
+
+**Store as:** `$POSITIONING_LANGUAGE`
+**Used in:** Phase 1 positioning translation, Phase 5 ad copy
+
+---
+
+#### Q13: Client Pain Points (CONDITIONAL)
+**Only ask if:** `$POSITIONING_MODE = 'deep'`
+
+**Ask:** "What frustration does your ideal client have BEFORE they find you?"
+
+**Example answers:**
+- "Unpredictable lead flow - feast or famine"
+- "Wasted ad spend without knowing why"
+- "Previous agencies that didn't understand their business"
+
+**Why it matters:** Pain points become problem-aware keywords (mid-funnel) and ad copy hooks.
+
+**Store as:** `$PAIN_POINTS`
+**Used in:** Phase 1 problem keywords, Phase 3 Pass 2, Phase 5 ad copy
+
+---
+
 ### Calculate Strategic Direction
 
 After all questions answered, calculate and present:
@@ -279,9 +385,13 @@ Use template from `templates/discovery_brief.md`. Must contain:
 ### Checkpoint
 
 Before proceeding to Phase 1, verify:
-- [ ] All 8 questions answered (Q8 optional)
+- [ ] Q1-Q7 answered (core questions)
+- [ ] Q8 answered (optional but recommended)
+- [ ] **Q9-Q10 answered (mandatory service validation questions)**
+- [ ] **Q11-Q13 answered IF `$POSITIONING_MODE = 'deep'`** (skip for commodity businesses)
 - [ ] Budget tier calculated with keyword limits
 - [ ] Max CPC calculated from customer value
+- [ ] `$SERVICES_TO_ADVERTISE` and `$SERVICES_NOT_TO_ADVERTISE` documented
 - [ ] RAG queried for methodology and warnings
 - [ ] Strategic direction presented and confirmed
 - [ ] `discovery_brief.md` created
@@ -320,7 +430,40 @@ Phase 0 gave us client input. Phase 1 validates and enriches with website analys
    - About page
    - Contact page
 
-2. **Validate business type** against Phase 0 hypothesis:
+2. **Build Canonical Service List** (CRITICAL - prevents wrong keywords)
+
+   Cross-reference `$SERVICES_TO_ADVERTISE` from Q9 with website content to create explicit service list:
+
+   ```markdown
+   ## Canonical Service List
+
+   This is the SOURCE OF TRUTH for what services to target with keywords.
+
+   | Service ID | Service Name | Landing Page | Keyword Variations |
+   |------------|--------------|--------------|-------------------|
+   | SVC-001 | Google Ads | /kundeflow/google-ads | AdWords, SEM, PPC |
+   | SVC-002 | Meta Ads | /kundeflow/meta-ads | Facebook Ads, Instagram Ads |
+   | SVC-003 | Lead Generation | /kundeflow/leadgenerering | B2B leads, leadgen |
+
+   ## Services NOT Offered (from Q10 + website analysis)
+
+   | Service | Why Not | Action |
+   |---------|---------|--------|
+   | LinkedIn Ads | No landing page, not mentioned in Q9 | EXCLUDE keywords |
+   | TikTok Ads | Not mentioned, no page | EXCLUDE keywords |
+   | SEO | Mentioned on site but NOT in Q9 | EXCLUDE keywords |
+   ```
+
+   **Validation Rules:**
+   - Every service in `$SERVICES_TO_ADVERTISE` MUST have a landing page
+   - Services found on website but NOT in `$SERVICES_TO_ADVERTISE` → Ask user before including
+   - Services in `$SERVICES_NOT_TO_ADVERTISE` → Add to exclusion list
+   - Platform-specific services (LinkedIn, TikTok, Twitter) → Only include if explicitly in Q9
+
+   **Store as:** `$CANONICAL_SERVICES`, `$SERVICES_NOT_OFFERED`
+   **Used in:** Phase 3 keyword validation, Phase 3.5 service verification, Phase 4 campaign structure
+
+3. **Validate business type** against Phase 0 hypothesis:
    - [ ] Physical address visible? → Local Service signal
    - [ ] Product catalog/SKUs? → E-commerce signal
    - [ ] "Get quote" / "Contact us" primary CTA? → Lead Gen signal
@@ -408,22 +551,28 @@ practices = query_knowledge(
 
 Use template from `templates/website_content.md`. Include:
 - Business type classification (validated)
+- **`$CANONICAL_SERVICES`** - The explicit service list with IDs, landing pages, and variations (REQUIRED)
+- **`$SERVICES_NOT_OFFERED`** - Services to exclude from keyword research (REQUIRED)
 - Services mapped to landing pages
 - Buyer journey keywords per service
 - USPs with headline versions
 - Cross-reference with Phase 0 findings
 - Any discrepancies flagged
-- **`$POSITIONING_KEYWORDS`** - The positioning-to-keyword translation table (REQUIRED)
+- **`$POSITIONING_KEYWORDS`** - The positioning-to-keyword translation table (REQUIRED if `$POSITIONING_MODE = 'deep'`)
 
 ### Checkpoint
 
 Before proceeding to Phase 2, verify:
 - [ ] Website fetched and analyzed
+- [ ] **Canonical Service List created** with Service IDs and landing pages
+- [ ] **Services NOT Offered documented** (from Q10 + website analysis)
 - [ ] Business type validated against Phase 0
 - [ ] Priority services have landing pages (or flagged)
 - [ ] Buyer journey mapped (Problem → Solution → Proof → Action)
 - [ ] No major discrepancies between Phase 0 and website
-- [ ] **Positioning → Keyword translation completed** (Problem/Outcome/Differentiation for each positioning element)
+- [ ] **Positioning → Keyword translation completed** (if `$POSITIONING_MODE = 'deep'`)
+
+**If Canonical Service List is missing: STOP. This prevents the LinkedIn-type errors.**
 
 ---
 
@@ -617,9 +766,122 @@ Include `Match Type Rationale` for each keyword.
 
 ---
 
-## Phase 4: Campaign Structure
+## Phase 3.5: Pre-Finalization Review (Service Validation)
 
 **Prerequisite:** Phase 3 `keyword_analysis.json` must exist.
+
+**Gate:** This phase validates keywords against `$CANONICAL_SERVICES` before building campaigns.
+
+### Why This Phase Exists
+
+URL-based keyword research returns related keywords that may not match actual services offered. This causes errors like:
+- "annoncering på linkedin" appearing when business doesn't offer LinkedIn services
+- "ecommerce marketing" when business focuses on B2B only
+- Service platforms being miscategorized (LinkedIn ≠ Meta)
+
+**This checkpoint catches these errors with user confirmation.**
+
+### Actions
+
+1. **Service Validation Check**
+
+   For EVERY keyword in `keyword_analysis.json`, validate against `$CANONICAL_SERVICES`:
+
+   ```python
+   for keyword in keywords:
+       matched_service = match_keyword_to_service(keyword, canonical_services)
+       if matched_service is None:
+           flag_for_review(keyword)
+   ```
+
+   **Matching rules:**
+   - "google ads bureau" → SVC-001 (Google Ads) ✓
+   - "facebook annoncering" → SVC-002 (Meta Ads) ✓
+   - "annoncering på linkedin" → NO MATCH → Flag for review
+   - "ecommerce marketing" → NO MATCH (if not in services) → Flag for review
+
+2. **Present Mismatches to User**
+
+   For any unmatched keywords, present them explicitly:
+
+   ```markdown
+   ## Service Validation Required
+
+   I found keywords that don't match your documented services from Q9:
+
+   | Keyword | Detected Service | Your Services | Recommendation |
+   |---------|------------------|---------------|----------------|
+   | "annoncering på linkedin" | LinkedIn Ads | Not in Q9 | Exclude? |
+   | "tiktok marketing bureau" | TikTok Ads | Not in Q9 | Exclude? |
+   | "ecommerce google ads" | E-commerce | B2B only (Q10) | Exclude? |
+
+   **Question:** Should I exclude these keywords, or do you actually offer these services?
+
+   Options:
+   1. Exclude all (they're not services we offer)
+   2. Include [specific ones] (we do offer those, update Q9)
+   3. Let me clarify which services we offer
+   ```
+
+3. **Update Based on Response**
+
+   - If "Exclude all" → Remove from keyword list, add to negative keywords
+   - If "Include specific" → Update `$CANONICAL_SERVICES` and keep keywords
+   - If "Clarify" → Return to Q9/Q10 and update
+
+4. **Validate Negative Keywords**
+
+   Confirm negative keyword layers are complete:
+
+   ```markdown
+   ## Negative Keyword Review
+
+   I've generated negative keywords in 3 layers:
+
+   **Layer 1 (Global):** gratis, billig, DIY, selv, job, karriere, løn...
+   **Layer 2 (Vertical):** [based on business type]
+   **Layer 3 (Client-specific):** [from Q7 + Q10 exclusions]
+   **Layer 4 (Campaign-specific):** [cross-campaign negatives]
+
+   Does this look complete? Any terms to add?
+   ```
+
+### Output Updates
+
+After validation:
+- Update `keyword_analysis.json` with excluded keywords marked `Include: false`
+- Create/update `negative_keywords.json` with structured 3-layer format
+
+### Output Artifact: `negative_keywords.json` (NEW)
+
+```json
+{
+  "global": ["gratis", "billig", "DIY", "selv", "pdf", "job", "karriere", "løn", "praktik", "uddannelse", "kursus", "hvad er", "wikipedia"],
+  "vertical": ["consumer", "privat", "home", "student"],
+  "client_specific": ["webshop", "online shop", "e-handel", "ecommerce"],
+  "campaign_specific": {
+    "mb | DA | Search | Google Ads": ["facebook", "instagram", "meta", "linkedin"],
+    "mb | DA | Search | Meta Ads": ["google", "adwords", "linkedin"]
+  }
+}
+```
+
+### Checkpoint
+
+Before proceeding to Phase 4, verify:
+- [ ] All keywords validated against `$CANONICAL_SERVICES`
+- [ ] Mismatched keywords presented to user and resolved
+- [ ] User confirmed service coverage is correct
+- [ ] `negative_keywords.json` created with 3+ layers
+- [ ] Keywords from `$SERVICES_NOT_TO_ADVERTISE` excluded
+
+**If service mismatches exist but were not confirmed: STOP. Get user approval.**
+
+---
+
+## Phase 4: Campaign Structure
+
+**Prerequisite:** Phase 3.5 service validation must be complete.
 
 ### Strategic Framework
 
@@ -855,7 +1117,14 @@ Phase 0 Discovery
 ├─ Q5: History ─────────────→ RAG warnings query, strategy (All)
 ├─ Q6: Competition ─────────→ Competitive keywords (Phase 2, 3)
 ├─ Q7: Exclusions ──────────→ Negative keywords (Phase 3)
-└─ Q8: Context ─────────────→ Ad copy language (Phase 5)
+├─ Q8: Context ─────────────→ Ad copy language (Phase 5)
+├─ Q9: Services to Advertise → Canonical Service List (Phase 1, 3.5)
+├─ Q10: Services NOT to Advertise → Exclusion list (Phase 3, 3.5)
+│
+└─ [IF $POSITIONING_MODE = 'deep']
+   ├─ Q11: Outcome Promise ──→ Positioning keywords (Phase 3 Pass 0)
+   ├─ Q12: Positioning Language → Ad copy, differentiation (Phase 5)
+   └─ Q13: Pain Points ──────→ Problem keywords (Phase 3 Pass 2)
 ```
 
 ---

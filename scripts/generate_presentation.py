@@ -138,6 +138,73 @@ def extract_executive_summary(potential_analysis_path: Path) -> str:
     return "<p>Denne potentialeanalyse viser hvordan Google Ads kan hjælpe med at få flere kunder.</p>"
 
 
+def filter_included_keywords(keywords: list) -> tuple:
+    """
+    Filter keywords to only include those where Include != false.
+    Returns (included_keywords, excluded_keywords, stats).
+    """
+    included = []
+    excluded = []
+
+    for kw in keywords:
+        # Keep keyword if Include is True, missing, or any truthy value
+        # Exclude only if Include is explicitly False
+        if kw.get("Include") is False:
+            excluded.append(kw)
+        else:
+            included.append(kw)
+
+    stats = {
+        "total": len(keywords),
+        "included": len(included),
+        "excluded": len(excluded),
+        "exclusion_reasons": {},
+    }
+
+    # Count exclusion reasons
+    for kw in excluded:
+        reason = kw.get("Exclusion_Reason", "No reason specified")
+        stats["exclusion_reasons"][reason] = (
+            stats["exclusion_reasons"].get(reason, 0) + 1
+        )
+
+    return included, excluded, stats
+
+
+def calculate_match_type_distribution(keywords: list) -> dict:
+    """Calculate match type distribution from keywords."""
+    distribution = {"Exact": 0, "Phrase": 0, "Broad": 0, "Unknown": 0}
+
+    for kw in keywords:
+        match_type = kw.get("Match Type", "Unknown")
+        if match_type in distribution:
+            distribution[match_type] += 1
+        else:
+            distribution["Unknown"] += 1
+
+    total = sum(distribution.values())
+    percentages = {}
+    if total > 0:
+        for mt, count in distribution.items():
+            percentages[mt] = round((count / total) * 100, 1)
+
+    return {"counts": distribution, "percentages": percentages, "total": total}
+
+
+def load_negative_keywords(client_dir: Path) -> dict:
+    """Load negative keywords from negative_keywords.json if it exists."""
+    negative_path = client_dir / "negative_keywords.json"
+
+    if not negative_path.exists():
+        return {}
+
+    try:
+        with open(negative_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, IOError):
+        return {}
+
+
 def calculate_average_cpc(keywords: list) -> float:
     """Calculate weighted average CPC from keywords."""
     total_weighted = 0
@@ -199,17 +266,26 @@ def generate_presentation(
             raise FileNotFoundError(f"Required file not found: {path}")
 
     # Load data
-    keywords = load_json_file(keyword_analysis_path)
+    all_keywords = load_json_file(keyword_analysis_path)
     campaign_structure = load_json_file(campaign_structure_path)
     ads = load_json_file(ad_copy_path)
 
     # Handle nested structure (some files have {"keywords": [...]})
-    if isinstance(keywords, dict) and "keywords" in keywords:
-        keywords = keywords["keywords"]
+    if isinstance(all_keywords, dict) and "keywords" in all_keywords:
+        all_keywords = all_keywords["keywords"]
     if isinstance(campaign_structure, dict) and "structure" in campaign_structure:
         campaign_structure = campaign_structure["structure"]
     if isinstance(ads, dict) and "ads" in ads:
         ads = ads["ads"]
+
+    # Filter keywords: only show included keywords in presentation
+    keywords, excluded_keywords, keyword_stats = filter_included_keywords(all_keywords)
+
+    # Calculate match type distribution for included keywords
+    match_type_dist = calculate_match_type_distribution(keywords)
+
+    # Load negative keywords if available
+    negative_keywords = load_negative_keywords(client_dir)
 
     # Load ROI data
     roi_data = {}
@@ -278,6 +354,18 @@ def generate_presentation(
         "{{BRAND_DARK}}": "#0f2f4a",
         "{{ACCENT_COLOR}}": accent_color,
         "{{KEYWORDS_JSON}}": json.dumps(keywords, ensure_ascii=False, indent=4),
+        "{{EXCLUDED_KEYWORDS_JSON}}": json.dumps(
+            excluded_keywords, ensure_ascii=False, indent=4
+        ),
+        "{{KEYWORD_STATS_JSON}}": json.dumps(
+            keyword_stats, ensure_ascii=False, indent=4
+        ),
+        "{{MATCH_TYPE_DIST_JSON}}": json.dumps(
+            match_type_dist, ensure_ascii=False, indent=4
+        ),
+        "{{NEGATIVE_KEYWORDS_JSON}}": json.dumps(
+            negative_keywords, ensure_ascii=False, indent=4
+        ),
         "{{CAMPAIGN_STRUCTURE_JSON}}": json.dumps(
             campaign_structure, ensure_ascii=False, indent=4
         ),
@@ -305,9 +393,22 @@ def generate_presentation(
 
     print(f"Presentation generated: {output_path}")
     print(f"  - Client: {client_name}")
-    print(f"  - Keywords: {len(keywords)}")
+    print(f"  - Keywords (included): {len(keywords)}")
+    if keyword_stats["excluded"] > 0:
+        print(f"  - Keywords (excluded): {keyword_stats['excluded']}")
+        for reason, count in keyword_stats["exclusion_reasons"].items():
+            print(f"      • {reason}: {count}")
     print(f"  - Campaign entries: {len(campaign_structure)}")
     print(f"  - Ads: {len(ads)}")
+    if negative_keywords:
+        neg_count = sum(
+            len(v) if isinstance(v, list) else 0 for v in negative_keywords.values()
+        )
+        print(f"  - Negative keywords: {neg_count}")
+    print(f"  - Match type distribution:")
+    for mt, pct in match_type_dist["percentages"].items():
+        if match_type_dist["counts"][mt] > 0:
+            print(f"      • {mt}: {pct}%")
     print(f"  - Budget: {currency} {budget:,}")
     print(f"  - Estimated CPC: {currency} {cpc:.2f}")
 

@@ -162,6 +162,87 @@ This table becomes the FIRST research target in Phase 3.
 
 ---
 
+## Canonical Service List (CRITICAL - Prevents Wrong Keywords)
+
+**The mondaybrew mistake:** LinkedIn keywords were included because URL-based research returned them, but mondaybrew doesn't offer LinkedIn services.
+
+**The fix:** Create an explicit Canonical Service List before any keyword research.
+
+### What is a Canonical Service List?
+
+A SOURCE OF TRUTH document listing:
+1. **Services TO advertise** (from Q9)
+2. **Services NOT to advertise** (from Q10 + website analysis)
+3. **Landing page for each service**
+4. **Keyword variations for each service**
+
+### Building the Canonical Service List
+
+#### Step 1: Start with Q9 Answer (`$SERVICES_TO_ADVERTISE`)
+
+User explicitly listed services they want to advertise. This is primary.
+
+#### Step 2: Cross-reference with Website
+
+For each service in Q9:
+- Does a landing page exist?
+- What keyword variations apply?
+- What platforms are included? (Google Ads ≠ LinkedIn Ads ≠ TikTok Ads)
+
+#### Step 3: Identify Gaps
+
+Services found on website but NOT in Q9:
+- Ask user: "Should we include this?"
+- If no → Add to `$SERVICES_NOT_OFFERED`
+
+#### Step 4: Add Explicit Exclusions from Q10
+
+User explicitly said "don't advertise X" → Add to exclusion list.
+
+### Template: Canonical Service List
+
+```markdown
+## Canonical Service List
+
+This is the SOURCE OF TRUTH for what services to target with keywords.
+
+| Service ID | Service Name | Landing Page | Keyword Variations | Included |
+|------------|--------------|--------------|-------------------|----------|
+| SVC-001 | Google Ads | /kundeflow/google-ads | AdWords, SEM, PPC, Google annoncering | YES |
+| SVC-002 | Meta Ads | /kundeflow/meta-ads | Facebook Ads, Instagram Ads, FB annoncering | YES |
+| SVC-003 | Lead Generation | /kundeflow/leadgenerering | B2B leads, leadgen, leadgenerering | YES |
+| SVC-004 | Websites | /konvertering/websites | Web design, hjemmeside | NO (Q10) |
+
+## Services NOT Offered (Explicit Exclusions)
+
+| Service | Source | Reason | Action in Phase 3 |
+|---------|--------|--------|-------------------|
+| LinkedIn Ads | Website analysis | No landing page, not in Q9 | EXCLUDE all LinkedIn keywords |
+| TikTok Ads | Website analysis | Not mentioned anywhere | EXCLUDE all TikTok keywords |
+| Websites | Q10 | User said "focus on Google/Meta only" | EXCLUDE website keywords |
+| E-commerce | Q10 | B2B only focus | EXCLUDE e-commerce keywords |
+| SEO | Website analysis | Service exists but not priority | EXCLUDE SEO keywords |
+```
+
+### Platform-Specific Rules
+
+**IMPORTANT:** These platforms are SEPARATE services:
+- Google Ads ≠ LinkedIn Ads ≠ TikTok Ads ≠ Twitter Ads
+- Meta Ads = Facebook Ads + Instagram Ads (same platform)
+- LinkedIn Ads = LinkedIn only (NOT part of Meta)
+
+If user says "Meta Ads" in Q9:
+- Include: Facebook Ads, Instagram Ads keywords ✓
+- Exclude: LinkedIn Ads keywords ✗
+
+### Store as Variables
+
+- `$CANONICAL_SERVICES` - The full table above
+- `$SERVICES_NOT_OFFERED` - The exclusion list
+- Used in: Phase 3 keyword validation, Phase 3.5 service verification
+
+---
+
 ## Landing Page Audit (NEW)
 
 **Before keyword research, audit what landing pages exist.**
@@ -360,6 +441,23 @@ Watch for these issues:
 - Contact form as primary CTA (✓)
 - Case studies section (✓)
 - Services aimed at businesses (✓)
+
+**Positioning Mode:** [deep / standard] (determines if Q11-Q13 were asked)
+
+## Canonical Service List ($CANONICAL_SERVICES) - REQUIRED
+
+This is the SOURCE OF TRUTH for Phase 3 keyword validation.
+
+| Service ID | Service Name | Landing Page | Keyword Variations | Included |
+|------------|--------------|--------------|-------------------|----------|
+| SVC-001 | [Service 1] | /path/ | [variations] | YES |
+| SVC-002 | [Service 2] | /path/ | [variations] | YES |
+
+## Services NOT Offered ($SERVICES_NOT_OFFERED) - REQUIRED
+
+| Service | Source | Reason | Action |
+|---------|--------|--------|--------|
+| [Service X] | Q10 / Website | [Why excluded] | EXCLUDE keywords |
 
 ## Core Services
 
