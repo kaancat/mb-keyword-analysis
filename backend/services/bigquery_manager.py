@@ -1,11 +1,25 @@
+"""
+BigQuery Manager.
+Query and manage BigQuery datasets for analytics data.
+"""
+
+import sys
+from pathlib import Path
+
+# Add plugin root to path for imports (works from any directory)
+_plugin_root = Path(__file__).parent.parent.parent
+if str(_plugin_root) not in sys.path:
+    sys.path.insert(0, str(_plugin_root))
+
 import os
 from google.cloud import bigquery
 from google.oauth2 import service_account
 import pandas as pd
 from backend.services.credentials import ensure_credentials
 
-# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
-ensure_credentials()
+# Load credentials from ~/.mondaybrew/.env - MUST succeed or raise error
+_cred_source = ensure_credentials()
+print(f"[BigQueryManager] Credentials loaded from: {_cred_source}")
 
 
 class BigQueryManager:

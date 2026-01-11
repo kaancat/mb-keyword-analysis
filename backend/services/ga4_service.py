@@ -1,3 +1,16 @@
+"""
+Google Analytics 4 Service.
+Access GA4 data via the Analytics Data API.
+"""
+
+import sys
+from pathlib import Path
+
+# Add plugin root to path for imports (works from any directory)
+_plugin_root = Path(__file__).parent.parent.parent
+if str(_plugin_root) not in sys.path:
+    sys.path.insert(0, str(_plugin_root))
+
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (
     DateRange,
@@ -16,8 +29,9 @@ import os
 from typing import List, Optional, Dict, Any
 from backend.services.credentials import ensure_credentials
 
-# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
-ensure_credentials()
+# Load credentials from ~/.mondaybrew/.env - MUST succeed or raise error
+_cred_source = ensure_credentials()
+print(f"[GA4Service] Credentials loaded from: {_cred_source}")
 
 
 class GA4Service:

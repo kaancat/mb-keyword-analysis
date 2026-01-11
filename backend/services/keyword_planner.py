@@ -1,9 +1,27 @@
+"""
+Google Ads Keyword Planner Service.
+Provides keyword research capabilities via the Google Ads API.
+
+CRITICAL: This module MUST successfully connect to Google Ads API.
+If imports fail or credentials are missing, it will raise an error LOUDLY
+so Claude knows the API isn't working (prevents hallucinated data).
+"""
+
+import sys
+from pathlib import Path
+
+# Add plugin root to path for imports (works from any directory)
+_plugin_root = Path(__file__).parent.parent.parent
+if str(_plugin_root) not in sys.path:
+    sys.path.insert(0, str(_plugin_root))
+
 from google.ads.googleads.client import GoogleAdsClient
 import os
 from backend.services.credentials import ensure_credentials
 
-# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
-ensure_credentials()
+# Load credentials from ~/.mondaybrew/.env - MUST succeed or raise error
+_cred_source = ensure_credentials()
+print(f"[KeywordPlanner] Credentials loaded from: {_cred_source}")
 
 
 class KeywordPlannerService:
@@ -131,33 +149,42 @@ class KeywordPlannerService:
         else:
             raise ValueError("Must provide either 'keywords' or 'page_url'.")
 
-        try:
-            # 2. Execute Request
-            response = keyword_plan_idea_service.generate_keyword_ideas(request=request)
+        # 2. Execute Request - DO NOT catch exceptions silently!
+        # If this fails, Claude MUST know so it doesn't hallucinate data
+        response = keyword_plan_idea_service.generate_keyword_ideas(request=request)
 
-            # 3. Parse Results
-            ideas = []
-            for idea in response:
-                metrics = idea.keyword_idea_metrics
-                ideas.append(
-                    {
-                        "text": idea.text,
-                        "avg_monthly_searches": metrics.avg_monthly_searches,
-                        "competition": metrics.competition.name,
-                        "low_top_of_page_bid": metrics.low_top_of_page_bid_micros
-                        / 1_000_000,
-                        "high_top_of_page_bid": metrics.high_top_of_page_bid_micros
-                        / 1_000_000,
-                    }
-                )
+        # 3. Parse Results
+        ideas = []
+        for idea in response:
+            metrics = idea.keyword_idea_metrics
+            ideas.append(
+                {
+                    "text": idea.text,
+                    "avg_monthly_searches": metrics.avg_monthly_searches,
+                    "competition": metrics.competition.name,
+                    "low_top_of_page_bid": metrics.low_top_of_page_bid_micros
+                    / 1_000_000,
+                    "high_top_of_page_bid": metrics.high_top_of_page_bid_micros
+                    / 1_000_000,
+                    "_source": "google_ads_api",  # Marker to prove data is real
+                }
+            )
 
-            # Sort by volume
-            ideas.sort(key=lambda x: x["avg_monthly_searches"], reverse=True)
-            return ideas[:20]  # Return top 20
+        # VALIDATION: Ensure we got real data
+        if not ideas:
+            raise RuntimeError(
+                "Google Ads API returned no keyword ideas. "
+                "Check: 1) credentials are valid, 2) customer_id has API access, "
+                "3) seed keywords/URL are valid for the target location/language."
+            )
 
-        except Exception as e:
-            print(f"Error generating keyword ideas: {e}")
-            return []
+        print(
+            f"[KeywordPlanner] SUCCESS: Got {len(ideas)} keyword ideas from Google Ads API"
+        )
+
+        # Sort by volume
+        ideas.sort(key=lambda x: x["avg_monthly_searches"], reverse=True)
+        return ideas[:20]  # Return top 20
 
     def get_forecast_metrics(self, keywords, location_id="Denmark", language_id="1000"):
         """

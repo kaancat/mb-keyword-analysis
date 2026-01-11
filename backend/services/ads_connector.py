@@ -1,3 +1,16 @@
+"""
+Google Ads Connector.
+Full read/write access to Google Ads accounts via the Google Ads API.
+"""
+
+import sys
+from pathlib import Path
+
+# Add plugin root to path for imports (works from any directory)
+_plugin_root = Path(__file__).parent.parent.parent
+if str(_plugin_root) not in sys.path:
+    sys.path.insert(0, str(_plugin_root))
+
 import os
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
@@ -6,8 +19,9 @@ import pandas as pd
 from datetime import datetime, timedelta
 from backend.services.credentials import ensure_credentials
 
-# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
-ensure_credentials()
+# Load credentials from ~/.mondaybrew/.env - MUST succeed or raise error
+_cred_source = ensure_credentials()
+print(f"[AdsConnector] Credentials loaded from: {_cred_source}")
 
 
 class AdsConnector:

@@ -1,11 +1,25 @@
+"""
+Google Search Console Service.
+Access organic search data via the Search Console API.
+"""
+
+import sys
+from pathlib import Path
+
+# Add plugin root to path for imports (works from any directory)
+_plugin_root = Path(__file__).parent.parent.parent
+if str(_plugin_root) not in sys.path:
+    sys.path.insert(0, str(_plugin_root))
+
 import os
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 from backend.services.credentials import ensure_credentials
 
-# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
-ensure_credentials()
+# Load credentials from ~/.mondaybrew/.env - MUST succeed or raise error
+_cred_source = ensure_credentials()
+print(f"[SearchConsole] Credentials loaded from: {_cred_source}")
 
 
 class SearchConsoleService:
