@@ -55,6 +55,25 @@ This skill transforms you from a checklist-follower into a **senior PPC speciali
 
 **Gate:** This phase MUST complete before ANY other work begins.
 
+### Discovery UI Flow (REQUIRED STEPS)
+
+Present these topics to the user AS SEPARATE STEPS. Do not combine them:
+
+| Step | Topic | Questions to Ask |
+|------|-------|------------------|
+| 1 | **Budget** | Q3: Monthly Google Ads budget |
+| 2 | **Customer Value** | Q1: What a typical customer spends |
+| 3 | **Services to Advertise** | Q9: List ALL services to advertise (be specific - "Google Ads", not "marketing") |
+| 4 | **Priority Focus** | Q2: Which 1-3 services should Google Ads focus on |
+| 5 | **Geography** | Target location and language |
+| 6 | **Exclusions** | Q7: What NOT to target, Q10: Services they DON'T offer or want to advertise |
+| 7 | **Conversion Goal** | Q4: What counts as success (form, call, purchase) |
+| 8 | **History** | Q5: Previous Google Ads experience |
+| 9 | **Competition** | Q6: Who they lose customers to |
+| 10 | **Context** | Q8: Additional notes, transcripts |
+
+**CRITICAL:** Step 3 (Services to Advertise) and Step 6 (Exclusions including services NOT to advertise) are MANDATORY. They prevent keywords for services the business doesn't offer.
+
 ### Why This Phase Exists
 
 Websites lie. Or at least, they don't tell the whole truth:
