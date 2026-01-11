@@ -1,6 +1,10 @@
 import os
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from backend.services.credentials import ensure_credentials
+
+# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
+ensure_credentials()
 
 
 class GoogleSheetsService:

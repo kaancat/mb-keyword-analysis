@@ -4,6 +4,10 @@ from google.ads.googleads.errors import GoogleAdsException
 from google.api_core import protobuf_helpers
 import pandas as pd
 from datetime import datetime, timedelta
+from backend.services.credentials import ensure_credentials
+
+# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
+ensure_credentials()
 
 
 class AdsConnector:

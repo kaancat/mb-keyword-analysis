@@ -12,24 +12,28 @@ from google.analytics.data_v1beta.types import (
 )
 from google.analytics.admin import AnalyticsAdminServiceClient
 from google.oauth2.credentials import Credentials
-from dotenv import load_dotenv
 import os
 from typing import List, Optional, Dict, Any
+from backend.services.credentials import ensure_credentials
 
-load_dotenv()
+# Load credentials from ~/.mondaybrew/.env (or local .env fallback)
+ensure_credentials()
+
 
 class GA4Service:
     def __init__(self):
         # OAuth 2.0 Authentication (User Context)
         # Uses the same "Master Token" pattern as Sheets and Search Console
-        
+
         client_id = os.getenv("GOOGLE_ADS_CLIENT_ID")
         client_secret = os.getenv("GOOGLE_ADS_CLIENT_SECRET")
         refresh_token = os.getenv("GOOGLE_ADS_REFRESH_TOKEN")
 
         if not all([client_id, client_secret, refresh_token]):
             print("--- Error: Missing OAuth Credentials for GA4Service ---")
-            print("Ensure GOOGLE_ADS_CLIENT_ID, GOOGLE_ADS_CLIENT_SECRET, and GOOGLE_ADS_REFRESH_TOKEN are set in .env")
+            print(
+                "Ensure GOOGLE_ADS_CLIENT_ID, GOOGLE_ADS_CLIENT_SECRET, and GOOGLE_ADS_REFRESH_TOKEN are set in .env"
+            )
             self.client = None
             self.admin_client = None
             return
@@ -43,7 +47,7 @@ class GA4Service:
                 client_secret=client_secret,
                 scopes=[
                     "https://www.googleapis.com/auth/analytics.readonly",
-                    "https://www.googleapis.com/auth/analytics.edit"
+                    "https://www.googleapis.com/auth/analytics.edit",
                 ],
             )
 
@@ -63,14 +67,16 @@ class GA4Service:
             response = self.admin_client.list_accounts()
             accounts = []
             for account in response:
-                accounts.append({
-                    "account_id": account.name.split('/')[-1],
-                    "name": account.name,
-                    "display_name": account.display_name,
-                    "region_code": account.region_code,
-                    "create_time": str(account.create_time),
-                    "update_time": str(account.update_time)
-                })
+                accounts.append(
+                    {
+                        "account_id": account.name.split("/")[-1],
+                        "name": account.name,
+                        "display_name": account.display_name,
+                        "region_code": account.region_code,
+                        "create_time": str(account.create_time),
+                        "update_time": str(account.update_time),
+                    }
+                )
             return accounts
         except Exception as e:
             print(f"Error listing accounts: {e}")
@@ -85,25 +91,31 @@ class GA4Service:
         try:
             properties = []
             if account_id:
-                response = self.admin_client.list_properties(filter=f"parent:accounts/{account_id}", show_deleted=False)
+                response = self.admin_client.list_properties(
+                    filter=f"parent:accounts/{account_id}", show_deleted=False
+                )
                 for prop in response:
-                    properties.append({
-                        "property_id": prop.name.split('/')[-1],
-                        "name": prop.name,
-                        "display_name": prop.display_name,
-                        "account_name": prop.parent
-                    })
+                    properties.append(
+                        {
+                            "property_id": prop.name.split("/")[-1],
+                            "name": prop.name,
+                            "display_name": prop.display_name,
+                            "account_name": prop.parent,
+                        }
+                    )
             else:
                 # Use list_account_summaries for global view
                 response = self.admin_client.list_account_summaries()
                 for account in response:
                     for prop in account.property_summaries:
-                        properties.append({
-                            "property_id": prop.property.split('/')[-1],
-                            "name": prop.property,
-                            "display_name": prop.display_name,
-                            "account_name": account.account
-                        })
+                        properties.append(
+                            {
+                                "property_id": prop.property.split("/")[-1],
+                                "name": prop.property,
+                                "display_name": prop.display_name,
+                                "account_name": account.account,
+                            }
+                        )
             return properties
         except Exception as e:
             print(f"Error listing properties: {e}")
@@ -112,18 +124,22 @@ class GA4Service:
     def list_data_streams(self, property_id: str) -> List[Dict[str, Any]]:
         """Lists data streams for a given property."""
         try:
-            response = self.admin_client.list_data_streams(parent=f"properties/{property_id}")
+            response = self.admin_client.list_data_streams(
+                parent=f"properties/{property_id}"
+            )
             streams = []
             for stream in response:
                 stream_data = {
-                    "stream_id": stream.name.split('/')[-1],
+                    "stream_id": stream.name.split("/")[-1],
                     "name": stream.name,
                     "type": stream.type_.name,
                     "display_name": stream.display_name,
                 }
                 if stream.web_stream_data:
                     stream_data["default_uri"] = stream.web_stream_data.default_uri
-                    stream_data["measurement_id"] = stream.web_stream_data.measurement_id
+                    stream_data["measurement_id"] = (
+                        stream.web_stream_data.measurement_id
+                    )
                 streams.append(stream_data)
             return streams
         except Exception as e:
@@ -133,14 +149,20 @@ class GA4Service:
     def list_bigquery_links(self, property_id: str) -> List[Dict[str, Any]]:
         """Lists BigQuery links for a property."""
         try:
-            response = self.admin_client.list_big_query_links(parent=f"properties/{property_id}")
+            response = self.admin_client.list_big_query_links(
+                parent=f"properties/{property_id}"
+            )
             links = []
             for link in response:
-                links.append({
-                    "name": link.name,
-                    "project_id": link.project,
-                    "dataset_id": getattr(link, 'dataset_location', None) # Attempt to get location/id
-                })
+                links.append(
+                    {
+                        "name": link.name,
+                        "project_id": link.project,
+                        "dataset_id": getattr(
+                            link, "dataset_location", None
+                        ),  # Attempt to get location/id
+                    }
+                )
             return links
         except Exception as e:
             return []
@@ -149,19 +171,25 @@ class GA4Service:
         """Lists key events (conversions) for a property."""
         try:
             # Try newer method name first, fallback to older
-            if hasattr(self.admin_client, 'list_key_events'):
-                response = self.admin_client.list_key_events(parent=f"properties/{property_id}")
+            if hasattr(self.admin_client, "list_key_events"):
+                response = self.admin_client.list_key_events(
+                    parent=f"properties/{property_id}"
+                )
             else:
-                response = self.admin_client.list_conversion_events(parent=f"properties/{property_id}")
-            
+                response = self.admin_client.list_conversion_events(
+                    parent=f"properties/{property_id}"
+                )
+
             events = []
             for event in response:
-                events.append({
-                    "name": event.name,
-                    "event_name": event.event_name,
-                    "create_time": str(event.create_time),
-                    "custom": event.custom
-                })
+                events.append(
+                    {
+                        "name": event.name,
+                        "event_name": event.event_name,
+                        "create_time": str(event.create_time),
+                        "custom": event.custom,
+                    }
+                )
             return events
         except Exception as e:
             print(f"Error listing key events: {e}")
@@ -172,39 +200,56 @@ class GA4Service:
         print(f"--- Finding Properties for Domain: {domain} ---")
         matches = []
         all_props = self.list_properties()
-        
-        target_domain = domain.lower().replace("https://", "").replace("http://", "").replace("www.", "").strip("/")
-        
+
+        target_domain = (
+            domain.lower()
+            .replace("https://", "")
+            .replace("http://", "")
+            .replace("www.", "")
+            .strip("/")
+        )
+
         for prop in all_props:
-            streams = self.list_data_streams(prop['property_id'])
+            streams = self.list_data_streams(prop["property_id"])
             for stream in streams:
-                if stream.get('default_uri'):
-                    stream_uri = stream['default_uri'].lower().replace("https://", "").replace("http://", "").replace("www.", "").strip("/")
+                if stream.get("default_uri"):
+                    stream_uri = (
+                        stream["default_uri"]
+                        .lower()
+                        .replace("https://", "")
+                        .replace("http://", "")
+                        .replace("www.", "")
+                        .strip("/")
+                    )
                     if target_domain in stream_uri or stream_uri in target_domain:
-                        matches.append({
-                            "property_id": prop['property_id'],
-                            "display_name": prop['display_name'],
-                            "account_name": prop['account_name'],
-                            "domain": stream['default_uri'],
-                            "stream_id": stream['stream_id']
-                        })
-                        break 
+                        matches.append(
+                            {
+                                "property_id": prop["property_id"],
+                                "display_name": prop["display_name"],
+                                "account_name": prop["account_name"],
+                                "domain": stream["default_uri"],
+                                "stream_id": stream["stream_id"],
+                            }
+                        )
+                        break
         return matches
 
     # --- 2. Generic Reporting Wrapper (Data API) ---
 
-    def run_report(self, 
-                   property_id: str, 
-                   dimensions: List[str], 
-                   metrics: List[str], 
-                   start_date: str = "30daysAgo",
-                   end_date: str = "today", 
-                   dimension_filter: Optional[FilterExpression] = None, 
-                   metric_filter: Optional[FilterExpression] = None, 
-                   limit: int = 10000, 
-                   offset: int = 0, 
-                   order_bys: Optional[List[Any]] = None, 
-                   metric_aggregations: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+    def run_report(
+        self,
+        property_id: str,
+        dimensions: List[str],
+        metrics: List[str],
+        start_date: str = "30daysAgo",
+        end_date: str = "today",
+        dimension_filter: Optional[FilterExpression] = None,
+        metric_filter: Optional[FilterExpression] = None,
+        limit: int = 10000,
+        offset: int = 0,
+        order_bys: Optional[List[Any]] = None,
+        metric_aggregations: Optional[List[str]] = None,
+    ) -> List[Dict[str, Any]]:
         """
         Generic wrapper for GA4 Data API runReport.
         """
@@ -219,17 +264,14 @@ class GA4Service:
                 limit=limit,
                 offset=offset,
                 order_bys=order_bys,
-                metric_aggregations=metric_aggregations
+                metric_aggregations=metric_aggregations,
             )
-            
+
             response = self.client.run_report(request)
-            
+
             results = []
             for row in response.rows:
-                item = {
-                    "dimensions": {},
-                    "metrics": {}
-                }
+                item = {"dimensions": {}, "metrics": {}}
                 for i, dim_val in enumerate(row.dimension_values):
                     item["dimensions"][dimensions[i]] = dim_val.value
                 for i, met_val in enumerate(row.metric_values):
@@ -237,7 +279,7 @@ class GA4Service:
                     # Simple type conversion
                     if val.isdigit():
                         val = int(val)
-                    elif val.replace('.', '', 1).isdigit():
+                    elif val.replace(".", "", 1).isdigit():
                         try:
                             val = float(val)
                         except ValueError:
@@ -249,29 +291,45 @@ class GA4Service:
             print(f"Error running report: {e}")
             return [{"error": str(e)}]
 
-    def check_compatibility(self, property_id: str, dimensions: List[str], metrics: List[str]) -> Dict[str, Any]:
+    def check_compatibility(
+        self, property_id: str, dimensions: List[str], metrics: List[str]
+    ) -> Dict[str, Any]:
         """Checks compatibility of dimensions and metrics."""
         try:
             request = CheckCompatibilityRequest(
                 property=f"properties/{property_id}",
                 dimensions=[Dimension(name=d) for d in dimensions],
-                metrics=[Metric(name=m) for m in metrics]
+                metrics=[Metric(name=m) for m in metrics],
             )
             response = self.client.check_compatibility(request)
             return {
-                "dimension_compatibility": [{ "name": c.dimension_metadata.api_name, "compatibility": c.compatibility.name } for c in response.dimension_compatibilities],
-                "metric_compatibility": [{ "name": c.metric_metadata.api_name, "compatibility": c.compatibility.name } for c in response.metric_compatibilities]
+                "dimension_compatibility": [
+                    {
+                        "name": c.dimension_metadata.api_name,
+                        "compatibility": c.compatibility.name,
+                    }
+                    for c in response.dimension_compatibilities
+                ],
+                "metric_compatibility": [
+                    {
+                        "name": c.metric_metadata.api_name,
+                        "compatibility": c.compatibility.name,
+                    }
+                    for c in response.metric_compatibilities
+                ],
             }
         except Exception as e:
             return {"error": str(e)}
 
-    def run_realtime_report(self, 
-                            property_id: str, 
-                            dimensions: List[str], 
-                            metrics: List[str], 
-                            limit: int = 10000, 
-                            dimension_filter: Optional[FilterExpression] = None, 
-                            metric_filter: Optional[FilterExpression] = None) -> List[Dict[str, Any]]:
+    def run_realtime_report(
+        self,
+        property_id: str,
+        dimensions: List[str],
+        metrics: List[str],
+        limit: int = 10000,
+        dimension_filter: Optional[FilterExpression] = None,
+        metric_filter: Optional[FilterExpression] = None,
+    ) -> List[Dict[str, Any]]:
         """Runs a realtime report."""
         try:
             request = RunRealtimeReportRequest(
@@ -280,10 +338,10 @@ class GA4Service:
                 metrics=[Metric(name=m) for m in metrics],
                 dimension_filter=dimension_filter,
                 metric_filter=metric_filter,
-                limit=limit
+                limit=limit,
             )
             response = self.client.run_realtime_report(request)
-            
+
             results = []
             for row in response.rows:
                 item = {"dimensions": {}, "metrics": {}}
@@ -293,7 +351,7 @@ class GA4Service:
                     val = met_val.value
                     if val.isdigit():
                         val = int(val)
-                    elif val.replace('.', '', 1).isdigit():
+                    elif val.replace(".", "", 1).isdigit():
                         try:
                             val = float(val)
                         except ValueError:
@@ -307,14 +365,24 @@ class GA4Service:
 
     # --- 3. Opinionated Convenience Methods ---
 
-    def get_behavior_metrics(self, property_id: str, days: int = 30) -> List[Dict[str, Any]]:
+    def get_behavior_metrics(
+        self, property_id: str, days: int = 30
+    ) -> List[Dict[str, Any]]:
         """Fetches core behavior metrics using run_report."""
         # print(f"--- Fetching Behavior Metrics for {property_id} ---")
         dims = ["sessionDefaultChannelGroup"]
-        mets = ["sessions", "engagementRate", "averageSessionDuration", "screenPageViewsPerSession", "conversions"]
-        
-        data = self.run_report(property_id, dims, mets, start_date=f"{days}daysAgo", end_date="today")
-        
+        mets = [
+            "sessions",
+            "engagementRate",
+            "averageSessionDuration",
+            "screenPageViewsPerSession",
+            "conversions",
+        ]
+
+        data = self.run_report(
+            property_id, dims, mets, start_date=f"{days}daysAgo", end_date="today"
+        )
+
         if data and "error" in data[0]:
             return data
 
@@ -322,23 +390,43 @@ class GA4Service:
         for row in data:
             metrics = row["metrics"]
             dims_res = row["dimensions"]
-            results.append({
-                "channel": dims_res["sessionDefaultChannelGroup"],
-                "sessions": metrics["sessions"],
-                "engagement_rate": f"{metrics['engagementRate'] * 100:.1f}%" if isinstance(metrics['engagementRate'], (int, float)) else metrics['engagementRate'],
-                "avg_duration_sec": round(metrics["averageSessionDuration"], 1) if isinstance(metrics["averageSessionDuration"], (int, float)) else metrics["averageSessionDuration"],
-                "pages_per_session": round(metrics["screenPageViewsPerSession"], 1) if isinstance(metrics["screenPageViewsPerSession"], (int, float)) else metrics["screenPageViewsPerSession"],
-                "conversions": metrics["conversions"]
-            })
+            results.append(
+                {
+                    "channel": dims_res["sessionDefaultChannelGroup"],
+                    "sessions": metrics["sessions"],
+                    "engagement_rate": (
+                        f"{metrics['engagementRate'] * 100:.1f}%"
+                        if isinstance(metrics["engagementRate"], (int, float))
+                        else metrics["engagementRate"]
+                    ),
+                    "avg_duration_sec": (
+                        round(metrics["averageSessionDuration"], 1)
+                        if isinstance(metrics["averageSessionDuration"], (int, float))
+                        else metrics["averageSessionDuration"]
+                    ),
+                    "pages_per_session": (
+                        round(metrics["screenPageViewsPerSession"], 1)
+                        if isinstance(
+                            metrics["screenPageViewsPerSession"], (int, float)
+                        )
+                        else metrics["screenPageViewsPerSession"]
+                    ),
+                    "conversions": metrics["conversions"],
+                }
+            )
         return results
 
-    def get_conversion_breakdown(self, property_id: str, days: int = 30) -> List[Dict[str, Any]]:
+    def get_conversion_breakdown(
+        self, property_id: str, days: int = 30
+    ) -> List[Dict[str, Any]]:
         """Fetches conversions broken down by event name."""
         dims = ["eventName"]
         mets = ["conversions"]
-        
-        data = self.run_report(property_id, dims, mets, start_date=f"{days}daysAgo", end_date="today")
-        
+
+        data = self.run_report(
+            property_id, dims, mets, start_date=f"{days}daysAgo", end_date="today"
+        )
+
         if data and "error" in data[0]:
             return []
 
@@ -347,60 +435,96 @@ class GA4Service:
             convs = row["metrics"]["conversions"]
             # Ensure convs is a number before comparison
             if isinstance(convs, (int, float)) and convs > 0:
-                results.append({
-                    "event_name": row["dimensions"]["eventName"],
-                    "conversions": convs
-                })
-        
-        results.sort(key=lambda x: x['conversions'], reverse=True)
+                results.append(
+                    {"event_name": row["dimensions"]["eventName"], "conversions": convs}
+                )
+
+        results.sort(key=lambda x: x["conversions"], reverse=True)
         return results
 
-    def get_top_pages(self, property_id: str, days: int = 30, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_top_pages(
+        self, property_id: str, days: int = 30, limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """Fetches top pages by views."""
         dims = ["pagePath"]
         mets = ["screenPageViews", "sessions", "conversions"]
-        
-        order_bys = [OrderBy(metric=OrderBy.MetricOrderBy(metric_name="screenPageViews"), desc=True)]
-        
-        data = self.run_report(property_id, dims, mets, start_date=f"{days}daysAgo", end_date="today", limit=limit, order_bys=order_bys)
-        
+
+        order_bys = [
+            OrderBy(
+                metric=OrderBy.MetricOrderBy(metric_name="screenPageViews"), desc=True
+            )
+        ]
+
+        data = self.run_report(
+            property_id,
+            dims,
+            mets,
+            start_date=f"{days}daysAgo",
+            end_date="today",
+            limit=limit,
+            order_bys=order_bys,
+        )
+
         if data and "error" in data[0]:
             return []
-            
+
         results = []
         for row in data:
-            results.append({
-                "page_path": row["dimensions"]["pagePath"],
-                "views": row["metrics"]["screenPageViews"],
-                "sessions": row["metrics"]["sessions"],
-                "conversions": row["metrics"]["conversions"]
-            })
+            results.append(
+                {
+                    "page_path": row["dimensions"]["pagePath"],
+                    "views": row["metrics"]["screenPageViews"],
+                    "sessions": row["metrics"]["sessions"],
+                    "conversions": row["metrics"]["conversions"],
+                }
+            )
         return results
 
-    def get_traffic_sources(self, property_id: str, days: int = 30, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_traffic_sources(
+        self, property_id: str, days: int = 30, limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """Fetches traffic sources."""
         dims = ["sessionSourceMedium"]
         mets = ["sessions", "conversions"]
-        
-        order_bys = [OrderBy(metric=OrderBy.MetricOrderBy(metric_name="sessions"), desc=True)]
-        
-        data = self.run_report(property_id, dims, mets, start_date=f"{days}daysAgo", end_date="today", limit=limit, order_bys=order_bys)
-        
+
+        order_bys = [
+            OrderBy(metric=OrderBy.MetricOrderBy(metric_name="sessions"), desc=True)
+        ]
+
+        data = self.run_report(
+            property_id,
+            dims,
+            mets,
+            start_date=f"{days}daysAgo",
+            end_date="today",
+            limit=limit,
+            order_bys=order_bys,
+        )
+
         if data and "error" in data[0]:
             return []
-            
+
         results = []
         for row in data:
-            results.append({
-                "source_medium": row["dimensions"]["sessionSourceMedium"],
-                "sessions": row["metrics"]["sessions"],
-                "conversions": row["metrics"]["conversions"]
-            })
+            results.append(
+                {
+                    "source_medium": row["dimensions"]["sessionSourceMedium"],
+                    "sessions": row["metrics"]["sessions"],
+                    "conversions": row["metrics"]["conversions"],
+                }
+            )
         return results
 
-    def create_google_ads_link(self, property_id: str, customer_id: str, ads_personalization_enabled: bool = True) -> Dict[str, Any]:
+    def create_google_ads_link(
+        self,
+        property_id: str,
+        customer_id: str,
+        ads_personalization_enabled: bool = True,
+    ) -> Dict[str, Any]:
         """Creates a link between a GA4 property and a Google Ads account."""
-        print(f"--- Creating Google Ads Link for Property {property_id} to Account {customer_id} ---")
+        print(
+            f"--- Creating Google Ads Link for Property {property_id} to Account {customer_id} ---"
+        )
         try:
             # Construct the link
             # Note: customer_id should be the 10-digit ID (e.g., '1234567890')
@@ -408,27 +532,26 @@ class GA4Service:
                 "customer_id": customer_id.replace("-", ""),
                 "ads_personalization_enabled": ads_personalization_enabled,
             }
-            
+
             parent = f"properties/{property_id}"
-            
+
             # The client library method signature might vary slightly depending on version,
             # but generally takes parent and google_ads_link
             from google.analytics.admin_v1alpha.types import GoogleAdsLink
-            
+
             google_ads_link = GoogleAdsLink(
                 customer_id=customer_id.replace("-", ""),
-                ads_personalization_enabled=ads_personalization_enabled
+                ads_personalization_enabled=ads_personalization_enabled,
             )
-            
+
             response = self.admin_client.create_google_ads_link(
-                parent=parent,
-                google_ads_link=google_ads_link
+                parent=parent, google_ads_link=google_ads_link
             )
-            
+
             return {
                 "name": response.name,
                 "create_time": str(response.create_time),
-                "customer_id": response.customer_id
+                "customer_id": response.customer_id,
             }
         except Exception as e:
             print(f"Error creating Google Ads link: {e}")
@@ -438,6 +561,7 @@ class GA4Service:
         """Deprecated: Use list_properties() instead."""
         return self.list_properties()
 
+
 if __name__ == "__main__":
     # Test
     service = GA4Service()
@@ -445,14 +569,14 @@ if __name__ == "__main__":
     props = service.list_properties()
     print(f"Found {len(props)} properties")
     if props:
-        p_id = props[0]['property_id']
+        p_id = props[0]["property_id"]
         print(f"Testing with property: {props[0]['display_name']} ({p_id})")
-        
+
         print("\n--- Data Streams ---")
         print(service.list_data_streams(p_id))
-        
+
         print("\n--- Behavior Metrics ---")
         print(service.get_behavior_metrics(p_id, days=7))
-        
+
         print("\n--- Top Pages ---")
         print(service.get_top_pages(p_id, days=7, limit=5))
