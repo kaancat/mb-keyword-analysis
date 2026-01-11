@@ -70,6 +70,11 @@ Websites lie. Or at least, they don't tell the whole truth:
 
 Use `AskUserQuestion` for each. These are NOT optional. Each answer drives concrete decisions.
 
+**Question Groups:**
+- **Q1-Q8:** Core discovery questions (ALWAYS ask)
+- **Q9-Q10:** Service validation questions (ALWAYS ask - prevents wrong keywords)
+- **Q11-Q13:** Positioning questions (CONDITIONAL - only for complex services)
+
 ---
 
 #### Q1: Customer Value
@@ -215,7 +220,13 @@ query_knowledge(
 
 ---
 
-#### Q9: Explicit Service Enumeration (MANDATORY)
+---
+
+### Service Validation Questions (Q9-Q10) - ALWAYS ASK
+
+**These questions are MANDATORY for ALL businesses. They prevent the LinkedIn-type error.**
+
+#### Q9: Services to Advertise
 **Ask:** "List ALL services you want to advertise via Google Ads. Be specific - not 'marketing' but 'Google Ads management', 'Facebook Ads', etc."
 
 **Why it matters:** Creates explicit source of truth for service validation. Prevents wrong keywords (e.g., LinkedIn keywords when they don't offer LinkedIn services).
@@ -230,7 +241,7 @@ query_knowledge(
 
 ---
 
-#### Q10: Explicit Exclusions (MANDATORY)
+#### Q10: Services NOT to Advertise
 **Ask:** "Are there any services you offer but do NOT want to advertise? Or services people might search for that you explicitly DON'T provide?"
 
 **Why it matters:** Catches potential keyword mismatches before research begins. More reliable than hoping to filter them out later.
@@ -245,7 +256,7 @@ query_knowledge(
 
 ---
 
-### Conditional Positioning Questions (Q11-Q13)
+### Conditional Positioning Questions (Q11-Q13) - ONLY FOR COMPLEX SERVICES
 
 **TRIGGER LOGIC:** Ask Q11-Q13 ONLY for complex services that sell outcomes, not commodities.
 
