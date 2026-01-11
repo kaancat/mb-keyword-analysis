@@ -1,0 +1,13 @@
+{
+  "name": "mb-keyword-analysis",
+  "version": "1.0.1",
+  "description": "Monday Brew Google Ads keyword analysis workflow - from website understanding to final deliverable with enforced phase gates",
+  "author": {
+    "name": "mondaybrew"
+  },
+  "homepage": "https://mondaybrew.dk",
+  "commands": [
+    "./commands/"
+  ],
+  "hooks": "./hooks/hooks.json"
+}
