@@ -72,6 +72,9 @@ The new version will be fetched on next session start.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.5 | 2026-01-11 | **FIX: Q9-Q10 now in commands/keyword-analysis.md** - service validation questions in discovery flow |
+| 1.3.4 | 2026-01-11 | Discovery UI flow table in SKILL.md (didn't fix question issue) |
+| 1.3.3 | 2026-01-11 | Created discovery_brief.md template |
 | 1.3.2 | 2026-01-11 | Quality assurance: service validation, Q9-Q13, Phase 3.5, negative keywords schema |
 | 1.3.1 | - | Previous stable |
 | 1.3.0 | - | Standalone plugin with central credentials |

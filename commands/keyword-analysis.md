@@ -74,6 +74,12 @@ Extract client name from the website URL (e.g., `aeflyt.dk` → `clients/aeflyt/
    - Any specific focus areas?
    - Any exclusions or things to avoid?
 
+5. **Service Validation Questions** (MANDATORY - always ask):
+   - Q9: List ALL services you want to advertise via Google Ads. Be specific - not "marketing" but "Google Ads", "Facebook Ads", etc.
+   - Q10: Any services you DON'T want to advertise, or services people might search for that you explicitly DON'T provide?
+
+   Store answers as `$SERVICES_TO_ADVERTISE` and `$SERVICES_NOT_TO_ADVERTISE` for validation in Phase 3.
+
 ### Output Artifact: `website_content.md`
 
 Must include:
@@ -83,6 +89,8 @@ Must include:
 - USPs
 - Landing page URLs
 - Exclusions
+- **Canonical Service List** (from Q9 - services to advertise with Service IDs)
+- **Services NOT Offered** (from Q10 - for negative keyword generation)
 
 ### Checkpoint
 
@@ -91,6 +99,9 @@ Before proceeding to Phase 2, verify:
 - [ ] All services/products are documented
 - [ ] User constraints have been gathered
 - [ ] Exclusions are documented
+- [ ] **Q9 answered: Services to advertise listed**
+- [ ] **Q10 answered: Services NOT to advertise listed**
+- [ ] **Canonical Service List created with Service IDs**
 
 If any checkbox is incomplete: **STOP. Do not proceed.**
 
@@ -190,6 +201,18 @@ Stop iterating when:
 - Location variants exist (for geo businesses)
 - No new themes emerging from seeds
 
+### Service Validation (Phase 3.5)
+
+**CRITICAL:** Before finalizing keywords, validate against Canonical Service List.
+
+1. **Map each keyword to a Service ID** from the Canonical Service List
+2. **Flag mismatches** - keywords that don't match any service you offer
+3. **Ask user** about any flagged keywords using AskUserQuestion:
+   - "I found keywords for [LinkedIn/TikTok/etc] but this isn't in your services list. Should I exclude these?"
+4. **Mark excluded keywords** with `"Include": false` and `"Exclusion_Reason": "Service not offered"`
+
+Example: If canonical services are "Google Ads, Meta Ads, Lead Generation" but keyword research returns "linkedin annoncering" → FLAG and confirm exclusion.
+
 ### Output Artifact: `keyword_analysis.json`
 
 Format:
@@ -218,6 +241,9 @@ Before proceeding to Phase 4, verify:
 - [ ] Match types are varied (not all Phrase)
 - [ ] Currency is correct for target market
 - [ ] Category and Intent tags applied
+- [ ] **Service Validation complete (Phase 3.5)**
+- [ ] **Mismatched keywords flagged and confirmed with user**
+- [ ] **Excluded keywords marked with Include: false**
 
 ---
 
@@ -476,3 +502,6 @@ After all phases complete:
 - Homepage URL for all landing pages
 - Wrong currency (USD instead of DKK)
 - Skipping business understanding phase
+- **Including keywords for services not offered** (e.g., LinkedIn keywords when business only does Google/Meta)
+- **Skipping Q9/Q10 service validation questions**
+- **Not validating keywords against Canonical Service List**
