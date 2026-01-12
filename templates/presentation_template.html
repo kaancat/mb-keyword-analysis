@@ -438,7 +438,7 @@
                             </div>
                         </div>
 
-                        <!-- Vertical/Industry Negatives -->
+                        <!-- Vertical/Industry Negatives - B2B -->
                         <div v-if="negativeKeywords.vertical_b2b && negativeKeywords.vertical_b2b.length > 0" class="border border-ink/10 rounded-mb p-4 bg-white/50">
                             <h4 class="font-semibold text-ink mb-3 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
@@ -446,6 +446,20 @@
                             </h4>
                             <div class="flex flex-wrap gap-2">
                                 <span v-for="kw in negativeKeywords.vertical_b2b" :key="kw"
+                                    class="inline-flex items-center px-2 py-1 rounded-mb text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200">
+                                    -{{ kw }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Vertical/Industry Negatives - B2C -->
+                        <div v-if="negativeKeywords.vertical_b2c && negativeKeywords.vertical_b2c.length > 0" class="border border-ink/10 rounded-mb p-4 bg-white/50">
+                            <h4 class="font-semibold text-ink mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                                B2C negative
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="kw in negativeKeywords.vertical_b2c" :key="kw"
                                     class="inline-flex items-center px-2 py-1 rounded-mb text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200">
                                     -{{ kw }}
                                 </span>

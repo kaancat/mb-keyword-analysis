@@ -222,6 +222,44 @@ def validate_phases(client_dir: Path) -> tuple[bool, list[dict]]:
             except:
                 pass
 
+    # Phase 3: negative_keywords.json (also Phase 3 output)
+    phase3_negatives = client_dir / "negative_keywords.json"
+    if not check_file_exists(phase3_negatives):
+        issues.append(
+            {
+                "phase": 3,
+                "severity": "block",
+                "message": "Phase 3 incomplete: negative_keywords.json missing. Must include global, vertical, client_specific, and campaign_negative_lists.",
+            }
+        )
+    else:
+        ok, err = check_json_valid(phase3_negatives)
+        if not ok:
+            issues.append(
+                {
+                    "phase": 3,
+                    "severity": "block",
+                    "message": f"Phase 3 error: Invalid negative_keywords.json - {err}",
+                }
+            )
+        else:
+            # Check required keys exist
+            try:
+                with open(phase3_negatives) as f:
+                    neg_data = json.load(f)
+                required_keys = ["global", "client_specific"]
+                missing_keys = [k for k in required_keys if k not in neg_data]
+                if missing_keys:
+                    issues.append(
+                        {
+                            "phase": 3,
+                            "severity": "warn",
+                            "message": f"Phase 3 quality: negative_keywords.json missing keys: {missing_keys}",
+                        }
+                    )
+            except:
+                pass
+
     # Phase 4: campaign_structure.json
     phase4_file = client_dir / "campaign_structure.json"
     if not check_file_exists(phase4_file):

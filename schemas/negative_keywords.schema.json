@@ -5,7 +5,6 @@
     "type": "object",
     "required": [
         "global",
-        "vertical",
         "client_specific"
     ],
     "properties": {
@@ -19,14 +18,24 @@
                 ["gratis", "billig", "DIY", "selv", "pdf", "job", "karriere", "løn", "praktik", "uddannelse", "kursus", "hvad er", "wikipedia", "youtube", "reddit"]
             ]
         },
-        "vertical": {
+        "vertical_b2b": {
             "type": "array",
             "items": {
                 "type": "string"
             },
-            "description": "Layer 2: Industry/vertical-specific negative keywords based on business type.",
+            "description": "Layer 2: B2B vertical-specific negative keywords. Use vertical_b2c for consumer businesses.",
             "examples": [
                 ["consumer", "privat", "home", "student", "freelance"]
+            ]
+        },
+        "vertical_b2c": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Layer 2: B2C vertical-specific negative keywords. Use vertical_b2b for business clients.",
+            "examples": [
+                ["enterprise", "corporate", "B2B", "business", "firma"]
             ]
         },
         "client_specific": {
@@ -49,7 +58,7 @@
                 ["competitor1", "competitor2"]
             ]
         },
-        "campaign_specific": {
+        "campaign_negative_lists": {
             "type": "object",
             "additionalProperties": {
                 "type": "array",

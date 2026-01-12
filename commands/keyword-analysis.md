@@ -34,7 +34,7 @@ Extract client name from the website URL (e.g., `aeflyt.dk` → `clients/aeflyt/
 |-------|-----------------|------|
 | 1. Business Understanding | `website_content.md` | BLOCKS Phase 2 |
 | 2. Strategic Analysis | `potential_analysis.md` | BLOCKS Phase 3 |
-| 3. Keyword Research | `keyword_analysis.json` | BLOCKS Phase 4 |
+| 3. Keyword Research | `keyword_analysis.json` + `negative_keywords.json` | BLOCKS Phase 4 |
 | 4. Campaign Structure | `campaign_structure.json` | BLOCKS Phase 5 |
 | 5. Ad Copy | `ad_copy.json` | BLOCKS Phase 6 |
 | 6. ROI Projection | `roi_calculator.json` | BLOCKS Phase 7 |
@@ -249,6 +249,51 @@ Format:
 
 **Currency MUST match target market.** DKK for Denmark. NOK for Norway.
 
+### Output Artifact: `negative_keywords.json`
+
+**REQUIRED:** Generate a structured negative keyword list with three layers:
+
+```json
+{
+  "global": [
+    "gratis", "billig", "DIY", "selv", "pdf", "job", "karriere",
+    "løn", "praktik", "uddannelse", "kursus", "hvad er", "wikipedia"
+  ],
+  "vertical_b2b": [
+    "consumer", "privat", "home", "student", "freelance"
+  ],
+  "client_specific": [
+    "webshop", "online shop", "e-handel", "ecommerce"
+  ],
+  "campaign_negative_lists": {
+    "mb | DA | Search | Google Ads": ["facebook", "instagram", "meta", "linkedin"],
+    "mb | DA | Search | Meta Ads": ["google", "adwords", "ppc"]
+  }
+}
+```
+
+**Three-layer negative keyword structure:**
+
+1. **Global negatives** - Apply to ALL campaigns:
+   - Generic unqualified terms: gratis, billig, DIY, selv
+   - Informational intent: hvad er, wikipedia, definition
+   - Job seekers: job, karriere, løn, praktik, uddannelse
+
+2. **Vertical negatives** - Apply based on business type:
+   - B2B: consumer, privat, home, student
+   - B2C: enterprise, corporate, B2B
+   - Local: national brand names if local-only
+
+3. **Client-specific negatives** - Based on Q7 and Q10 answers:
+   - Services NOT offered (from Canonical Service List)
+   - Geographic exclusions
+   - Customer types to avoid
+
+4. **Campaign-specific negative lists** - Cross-campaign exclusions:
+   - Google Ads campaign: exclude "facebook", "meta", "instagram"
+   - Meta Ads campaign: exclude "google", "adwords", "ppc"
+   - Prevents campaigns from cannibalizing each other
+
 ### Checkpoint
 
 Before proceeding to Phase 4, verify:
@@ -260,6 +305,7 @@ Before proceeding to Phase 4, verify:
 - [ ] **Service Validation complete (Phase 3.5)**
 - [ ] **Mismatched keywords flagged and confirmed with user**
 - [ ] **Excluded keywords marked with Include: false**
+- [ ] **`negative_keywords.json` created with all 4 layers**
 
 ---
 

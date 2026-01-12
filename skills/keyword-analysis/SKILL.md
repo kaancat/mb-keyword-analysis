@@ -797,6 +797,36 @@ Stop when:
 
 Include `Match Type Rationale` for each keyword.
 
+### Output Artifact: `negative_keywords.json`
+
+**REQUIRED:** Generate a structured negative keyword list with 4 layers:
+
+```json
+{
+  "global": [
+    "gratis", "billig", "DIY", "selv", "pdf", "job", "karriere",
+    "løn", "praktik", "uddannelse", "kursus", "hvad er", "wikipedia"
+  ],
+  "vertical_b2b": [
+    "consumer", "privat", "home", "student", "freelance"
+  ],
+  "client_specific": [
+    "webshop", "online shop", "e-handel", "ecommerce"
+  ],
+  "campaign_negative_lists": {
+    "mb | DA | Search | Google Ads": ["facebook", "instagram", "meta", "linkedin"],
+    "mb | DA | Search | Meta Ads": ["google", "adwords", "ppc"]
+  }
+}
+```
+
+**Layer explanations:**
+
+1. **`global`** - Apply to ALL campaigns (generic unqualified, job seekers, informational)
+2. **`vertical_b2b`** or `vertical_b2c` - Based on business type from Phase 1
+3. **`client_specific`** - From Q7 (exclusions) and Q10 (services NOT to advertise)
+4. **`campaign_negative_lists`** - Cross-campaign exclusions (Google campaign excludes "facebook", Meta excludes "google")
+
 ### Checkpoint
 
 - [ ] **Pass 0 (Positioning keywords) completed BEFORE generic passes**
@@ -806,6 +836,7 @@ Include `Match Type Rationale` for each keyword.
 - [ ] High-bid keywords filtered against `$MAX_CPC`
 - [ ] All `$PRIORITY_SERVICES` covered
 - [ ] Avg volume per keyword >200
+- [ ] **`negative_keywords.json` created with all 4 layers**
 
 **If positioning keywords are missing or <10% of total: STOP. Go back to Pass 0.**
 
