@@ -38,6 +38,74 @@ Document in `website_content.md`:
 
 ---
 
+## URL Discovery Protocol
+
+**CRITICAL: Do not guess URLs. Discover them.**
+
+### Why This Matters
+
+Previous versions would guess URLs like `/services/`, `/about/`, `/kundeflow/` that often returned 404 errors. The plugin must discover ACTUAL URLs from the website, not assume standard paths.
+
+### Step-by-Step URL Discovery
+
+1. **Fetch homepage** → extract all `<a href>` links
+2. **Filter to same-domain links** (ignore external)
+3. **Categorize found links:**
+   - Navigation links (from `<nav>`)
+   - Footer links
+   - Content links (from main body)
+4. **Check for sitemap.xml** → extract additional URLs
+5. **Fetch discovered service pages**
+6. **If coverage seems incomplete, ask user**
+
+### Common Navigation Patterns to Look For
+
+| Pattern | Example |
+|---------|---------|
+| Top nav dropdown | Services → Google Ads, Meta Ads |
+| Service grid | Cards linking to /google-ads/, /meta-ads/ |
+| Footer sitemap | Full list of all pages |
+| Mega menu | Expanded nav with all services |
+
+### What NOT To Do
+
+❌ Guess URLs like /services/, /about/, /contact/
+❌ Assume standard URL structure
+❌ Give up if first guess fails
+❌ Fetch URLs without first finding them in HTML
+
+### What TO Do
+
+✓ Parse actual links from HTML response
+✓ Look in `<nav>` elements for navigation
+✓ Look in `<footer>` for sitemap-style links
+✓ Follow navigation structure
+✓ Check /sitemap.xml if it exists
+✓ Ask user if pages seem missing
+
+### Example: mondaybrew.dk
+
+**Wrong approach (guessing):**
+```
+Fetch /services/ → 404
+Fetch /kundeflow/ → 404
+Fetch /google-ads/ → 404
+```
+
+**Correct approach (discovering):**
+```
+1. Fetch homepage → extract links:
+   - /om (nav)
+   - /cases (nav)
+   - /kontakt (nav)
+   - /kundeflow/google-ads (footer)
+   - /kundeflow/meta-ads (footer)
+
+2. Fetch discovered pages only
+```
+
+---
+
 ## Website Analysis Checklist
 
 ### Services/Products

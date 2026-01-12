@@ -454,11 +454,26 @@ Phase 0 gave us client input. Phase 1 validates and enriches with website analys
 
 ### Actions
 
-1. **Fetch the client website** using WebFetch
-   - Homepage
-   - All service/product pages (especially `$PRIORITY_SERVICES` from Phase 0)
-   - About page
-   - Contact page
+1. **Fetch and discover website structure** using WebFetch
+
+   **Step 1:** Fetch the homepage URL provided by user
+
+   **Step 2:** Extract ALL internal links from the homepage HTML:
+   - Look in `<nav>` elements for navigation links
+   - Look in `<footer>` for sitemap-style links
+   - Look for service/product links in the main content
+   - **CRITICAL: Do NOT guess URLs - only use links found in HTML**
+
+   **Step 3:** Try fetching `/sitemap.xml` - if it exists, extract additional URLs
+
+   **Step 4:** From discovered links, fetch key pages:
+   - Service/product pages (prioritize `$PRIORITY_SERVICES` from Phase 0)
+   - About page (if found)
+   - Contact page (if found)
+   - Pricing page (if found)
+
+   **Step 5:** If important pages seem missing, ask user:
+   - "I found these pages: [list]. Are there other service pages I should review?"
 
 2. **Build Canonical Service List** (CRITICAL - prevents wrong keywords)
 
