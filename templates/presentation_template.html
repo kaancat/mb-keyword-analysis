@@ -7,22 +7,44 @@
     <title>Potentialeanalyse - {{CLIENT_NAME}}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Monday Brew fonts: Inter for body, Plus Jakarta Sans for headings (similar to HeyWow/Sailec) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
+                        // Monday Brew Brand Colors
                         brand: {
-                            DEFAULT: '{{BRAND_COLOR}}',
-                            light: '{{BRAND_LIGHT}}',
-                            dark: '{{BRAND_DARK}}'
+                            DEFAULT: '#49444b',      // mb-ink
+                            light: '#f5f7fd',        // mb-bg
+                            dark: '#121017'          // dark mode bg
                         },
-                        accent: '{{ACCENT_COLOR}}',
-                        bgsoft: '#e9f4ff'
+                        accent: '#ff914d',           // mb-accent (warm orange)
+                        ink: '#49444b',              // main text
+                        bgsoft: '#f5f7fd',           // soft background
+                        surface: {
+                            DEFAULT: '#ffffff',
+                            elevated: 'rgba(255, 255, 255, 0.8)'
+                        }
                     },
                     fontFamily: {
-                        sans: ['Roboto', 'sans-serif'],
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'Inter', '-apple-system', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'mb': '0.625rem',  // 10px - Monday Brew default
+                        'mb-lg': '0.875rem', // 14px
+                        'mb-xl': '1.25rem',  // 20px
+                    },
+                    boxShadow: {
+                        'mb-sm': '0 2px 8px rgba(73, 68, 75, 0.06)',
+                        'mb': '0 4px 16px rgba(73, 68, 75, 0.08)',
+                        'mb-lg': '0 12px 32px rgba(73, 68, 75, 0.12)',
+                        'mb-elevated': '0 24px 64px rgba(10, 10, 10, 0.08)',
+                        'glass': '0 8px 32px rgba(73, 68, 75, 0.08)',
                     }
                 }
             }
@@ -32,229 +54,264 @@
         [v-cloak] { display: none; }
         .slide-enter-active, .slide-leave-active { transition: opacity 0.3s ease; }
         .slide-enter-from, .slide-leave-to { opacity: 0; }
-        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.25, 0.62, 0.32, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Monday Brew Glass Effect */
+        .glass-surface {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(73, 68, 75, 0.08);
+        }
+
+        /* Accent gradient for highlights */
+        .accent-gradient {
+            background: linear-gradient(135deg, #ff914d 0%, #ffb380 100%);
+        }
+
+        /* Monday Brew text styles */
+        .font-heading { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+
+        /* Subtle hover transitions */
+        .mb-hover { transition: all 0.28s cubic-bezier(0.25, 0.62, 0.32, 1); }
+        .mb-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(73, 68, 75, 0.12); }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f5f7fd; }
+        ::-webkit-scrollbar-thumb { background: rgba(73, 68, 75, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(73, 68, 75, 0.35); }
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+<body class="bg-bgsoft text-ink font-sans h-screen flex overflow-hidden">
 
     <div id="app" v-cloak class="flex w-full h-full">
 
-        <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-xl z-10 flex flex-col border-r border-gray-100">
-            <div class="p-6 border-b border-gray-100 flex flex-col items-center bg-bgsoft">
-                <img v-if="clientLogo" :src="clientLogo" :alt="clientName" class="h-16 object-contain mb-4 drop-shadow">
-                <div v-else class="h-16 flex items-center justify-center text-2xl font-bold text-brand mb-4">{{ clientName }}</div>
-                <div class="text-xs font-bold text-brand uppercase tracking-wider">Potentialeanalyse</div>
+        <!-- Sidebar - Monday Brew Style -->
+        <aside class="w-64 glass-surface shadow-mb-lg z-10 flex flex-col">
+            <div class="p-6 border-b border-ink/5 flex flex-col items-center">
+                <img v-if="clientLogo" :src="clientLogo" :alt="clientName" class="h-14 object-contain mb-3 drop-shadow-sm">
+                <div v-else class="h-14 flex items-center justify-center text-xl font-heading font-bold text-ink mb-3">{{ clientName }}</div>
+                <div class="text-[10px] font-semibold text-accent uppercase tracking-[0.15em]">Potentialeanalyse</div>
             </div>
 
-            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
                 <button @click="currentTab = 'summary'"
-                    :class="{'bg-brand text-white shadow-md': currentTab === 'summary', 'text-gray-600 hover:bg-gray-100': currentTab !== 'summary'}"
-                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
-                    <span class="text-xl">📊</span> Executive Summary
+                    :class="{'bg-ink text-white shadow-mb': currentTab === 'summary', 'text-ink/70 hover:bg-ink/5 hover:text-ink': currentTab !== 'summary'}"
+                    class="w-full text-left px-4 py-3 rounded-mb transition-all duration-200 flex items-center gap-3 font-medium text-sm">
+                    <span class="text-lg">📊</span> Executive Summary
                 </button>
                 <button @click="currentTab = 'roi'"
-                    :class="{'bg-brand text-white shadow-md': currentTab === 'roi', 'text-gray-600 hover:bg-gray-100': currentTab !== 'roi'}"
-                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
-                    <span class="text-xl">🧮</span> ROI Beregner
+                    :class="{'bg-ink text-white shadow-mb': currentTab === 'roi', 'text-ink/70 hover:bg-ink/5 hover:text-ink': currentTab !== 'roi'}"
+                    class="w-full text-left px-4 py-3 rounded-mb transition-all duration-200 flex items-center gap-3 font-medium text-sm">
+                    <span class="text-lg">🧮</span> ROI Beregner
                 </button>
                 <button @click="currentTab = 'keywords'"
-                    :class="{'bg-brand text-white shadow-md': currentTab === 'keywords', 'text-gray-600 hover:bg-gray-100': currentTab !== 'keywords'}"
-                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
-                    <span class="text-xl">🔍</span> Søgeordsanalyse
+                    :class="{'bg-ink text-white shadow-mb': currentTab === 'keywords', 'text-ink/70 hover:bg-ink/5 hover:text-ink': currentTab !== 'keywords'}"
+                    class="w-full text-left px-4 py-3 rounded-mb transition-all duration-200 flex items-center gap-3 font-medium text-sm">
+                    <span class="text-lg">🔍</span> Søgeordsanalyse
                 </button>
                 <button @click="currentTab = 'campaigns'"
-                    :class="{'bg-brand text-white shadow-md': currentTab === 'campaigns', 'text-gray-600 hover:bg-gray-100': currentTab !== 'campaigns'}"
-                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
-                    <span class="text-xl">🏗️</span> Kampagnestruktur
+                    :class="{'bg-ink text-white shadow-mb': currentTab === 'campaigns', 'text-ink/70 hover:bg-ink/5 hover:text-ink': currentTab !== 'campaigns'}"
+                    class="w-full text-left px-4 py-3 rounded-mb transition-all duration-200 flex items-center gap-3 font-medium text-sm">
+                    <span class="text-lg">🏗️</span> Kampagnestruktur
                 </button>
                 <button @click="currentTab = 'ads'"
-                    :class="{'bg-brand text-white shadow-md': currentTab === 'ads', 'text-gray-600 hover:bg-gray-100': currentTab !== 'ads'}"
-                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3">
-                    <span class="text-xl">📢</span> Annonceeksempler
+                    :class="{'bg-ink text-white shadow-mb': currentTab === 'ads', 'text-ink/70 hover:bg-ink/5 hover:text-ink': currentTab !== 'ads'}"
+                    class="w-full text-left px-4 py-3 rounded-mb transition-all duration-200 flex items-center gap-3 font-medium text-sm">
+                    <span class="text-lg">📢</span> Annonceeksempler
                 </button>
             </nav>
 
-            <div class="p-4 border-t border-gray-100 text-center text-xs text-gray-400">
-                <div class="mb-2">Udarbejdet af</div>
-                <div class="font-bold text-brand">Monday Brew</div>
+            <div class="p-4 border-t border-ink/5 text-center">
+                <div class="text-[10px] text-ink/50 uppercase tracking-wider mb-1">Udarbejdet af</div>
+                <div class="font-heading font-semibold text-sm text-ink">mondaybrew</div>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+        <main class="flex-1 overflow-y-auto bg-bgsoft p-8">
 
             <!-- Summary Tab -->
             <div v-if="currentTab === 'summary'" class="max-w-4xl mx-auto space-y-8 animate-fade-in">
                 <header class="mb-8">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="text-xs font-semibold text-brand uppercase tracking-[0.15em]">{{ clientTagline }}</span>
-                        <span class="h-1 w-8 bg-accent rounded-full"></span>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-[11px] font-semibold text-accent uppercase tracking-[0.15em]">{{ clientTagline }}</span>
+                        <span class="h-0.5 w-8 bg-accent rounded-full"></span>
                     </div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Potentialeanalyse for {{ clientName }}</h1>
-                    <p class="text-lg text-gray-600">{{ summarySubtitle }}</p>
-                    <div class="mt-4 flex gap-3">
-                        <a :href="clientCTA" target="_blank" class="px-4 py-2 rounded-lg bg-brand text-white font-semibold shadow hover:opacity-90 transition">Kontakt os</a>
-                        <a :href="clientWebsite" target="_blank" class="px-4 py-2 rounded-lg border border-brand text-brand font-semibold hover:bg-bgsoft transition">Besøg website</a>
+                    <h1 class="text-3xl font-heading font-bold text-ink mb-3">Potentialeanalyse for {{ clientName }}</h1>
+                    <p class="text-lg text-ink/60">{{ summarySubtitle }}</p>
+                    <div class="mt-5 flex gap-3">
+                        <a :href="clientCTA" target="_blank" class="px-5 py-2.5 rounded-mb accent-gradient text-white font-semibold shadow-mb mb-hover">Kontakt os</a>
+                        <a :href="clientWebsite" target="_blank" class="px-5 py-2.5 rounded-mb border border-ink/15 text-ink font-medium hover:bg-white/50 transition">Besøg website</a>
                     </div>
                 </header>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <div class="text-brand font-bold text-lg mb-2">Estimeret Omsætning</div>
-                        <div class="text-3xl font-bold text-gray-900">{{ formatCurrency(roiOutputs.estimated_revenue) }}</div>
-                        <div class="text-sm text-gray-500 mt-1">pr. måned ved {{ formatCurrency(inputs.budget) }} budget</div>
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                    <div class="bg-white/80 backdrop-blur-sm p-6 rounded-mb-lg shadow-mb border border-ink/5 mb-hover">
+                        <div class="text-ink/60 font-medium text-sm mb-2">Estimeret Omsætning</div>
+                        <div class="text-3xl font-heading font-bold text-ink">{{ formatCurrency(roiOutputs.estimated_revenue) }}</div>
+                        <div class="text-sm text-ink/50 mt-1">pr. måned ved {{ formatCurrency(inputs.budget) }} budget</div>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <div class="text-brand font-bold text-lg mb-2">Estimeret ROAS</div>
-                        <div class="text-3xl font-bold text-green-600">{{ roiOutputs.roas }}</div>
-                        <div class="text-sm text-gray-500 mt-1">Return on Ad Spend</div>
+                    <div class="bg-white/80 backdrop-blur-sm p-6 rounded-mb-lg shadow-mb border border-ink/5 mb-hover">
+                        <div class="text-ink/60 font-medium text-sm mb-2">Estimeret ROAS</div>
+                        <div class="text-3xl font-heading font-bold text-accent">{{ roiOutputs.roas }}</div>
+                        <div class="text-sm text-ink/50 mt-1">Return on Ad Spend</div>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <div class="text-brand font-bold text-lg mb-2">Nye Kunder</div>
-                        <div class="text-3xl font-bold text-gray-900">{{ roiOutputs.estimated_customers }}</div>
-                        <div class="text-sm text-gray-500 mt-1">estimeret pr. måned</div>
+                    <div class="bg-white/80 backdrop-blur-sm p-6 rounded-mb-lg shadow-mb border border-ink/5 mb-hover">
+                        <div class="text-ink/60 font-medium text-sm mb-2">Nye Kunder</div>
+                        <div class="text-3xl font-heading font-bold text-ink">{{ roiOutputs.estimated_customers }}</div>
+                        <div class="text-sm text-ink/50 mt-1">estimeret pr. måned</div>
                     </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 prose prose-blue max-w-none">
-                    <h3 class="text-xl font-bold text-brand mb-4">Executive Summary</h3>
-                    <div v-html="executiveSummary"></div>
+                <!-- Executive Summary Card -->
+                <div class="bg-white/90 backdrop-blur-sm p-8 rounded-mb-lg shadow-mb border border-ink/5 prose prose-slate max-w-none">
+                    <h3 class="text-xl font-heading font-bold text-ink mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-accent rounded-full"></span>
+                        Executive Summary
+                    </h3>
+                    <div class="text-ink/80 leading-relaxed" v-html="executiveSummary"></div>
                 </div>
             </div>
 
             <!-- ROI Calculator Tab -->
             <div v-if="currentTab === 'roi'" class="max-w-6xl mx-auto animate-fade-in">
                 <header class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">ROI Beregner</h1>
-                    <p class="text-gray-600">Juster tallene herunder for at se potentialet baseret på jeres egne data.</p>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-[11px] font-semibold text-accent uppercase tracking-[0.15em]">Interaktiv</span>
+                        <span class="h-0.5 w-8 bg-accent rounded-full"></span>
+                    </div>
+                    <h1 class="text-3xl font-heading font-bold text-ink mb-3">ROI Beregner</h1>
+                    <p class="text-lg text-ink/60">Juster tallene herunder for at se potentialet baseret på jeres egne data.</p>
                 </header>
 
                 <!-- Interactive Input Controls -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                <div class="bg-white/90 backdrop-blur-sm p-6 rounded-mb-lg shadow-mb border border-ink/5 mb-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Månedligt Budget</label>
-                            <div class="relative rounded-md shadow-sm">
+                            <label class="block text-sm font-medium text-ink/80 mb-1">Månedligt Budget</label>
+                            <div class="relative rounded-mb shadow-sm">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">kr.</span>
+                                    <span class="text-ink/50 sm:text-sm">kr.</span>
                                 </div>
                                 <input type="number" v-model.number="inputs.budget"
-                                    class="focus:ring-brand focus:border-brand block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border">
+                                    class="focus:ring-accent focus:border-accent block w-full pl-10 sm:text-sm border-ink/15 rounded-mb p-2.5 border bg-white/80">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Fortjeneste pr. kunde</label>
-                            <div class="relative rounded-md shadow-sm">
+                            <label class="block text-sm font-medium text-ink/80 mb-1">Fortjeneste pr. kunde</label>
+                            <div class="relative rounded-mb shadow-sm">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">kr.</span>
+                                    <span class="text-ink/50 sm:text-sm">kr.</span>
                                 </div>
                                 <input type="number" v-model.number="inputs.profit_per_customer"
-                                    class="focus:ring-brand focus:border-brand block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border">
+                                    class="focus:ring-accent focus:border-accent block w-full pl-10 sm:text-sm border-ink/15 rounded-mb p-2.5 border bg-white/80">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Estimeret CPC</label>
-                            <div class="relative rounded-md shadow-sm">
+                            <label class="block text-sm font-medium text-ink/80 mb-1">Estimeret CPC</label>
+                            <div class="relative rounded-mb shadow-sm">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">kr.</span>
+                                    <span class="text-ink/50 sm:text-sm">kr.</span>
                                 </div>
                                 <input type="number" v-model.number="estimates.cpc"
-                                    class="focus:ring-brand focus:border-brand block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border">
+                                    class="focus:ring-accent focus:border-accent block w-full pl-10 sm:text-sm border-ink/15 rounded-mb p-2.5 border bg-white/80">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Website konvertering</label>
+                            <label class="block text-sm font-medium text-ink/80 mb-1">Website konvertering</label>
                             <div class="flex items-center gap-2">
                                 <input type="range" v-model.number="estimates.website_conv_rate" min="1" max="20" step="0.5"
-                                    class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600">
-                                <span class="text-sm font-semibold text-gray-700 w-12 text-right">{{ estimates.website_conv_rate }}%</span>
+                                    class="flex-1 h-2 bg-ink/10 rounded-lg appearance-none cursor-pointer accent-accent">
+                                <span class="text-sm font-semibold text-ink w-12 text-right">{{ estimates.website_conv_rate }}%</span>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Lukningsrate</label>
+                            <label class="block text-sm font-medium text-ink/80 mb-1">Lukningsrate</label>
                             <div class="flex items-center gap-2">
                                 <input type="range" v-model.number="inputs.close_rate" min="1" max="100"
-                                    class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand">
-                                <span class="text-sm font-semibold text-gray-700 w-12 text-right">{{ inputs.close_rate }}%</span>
+                                    class="flex-1 h-2 bg-ink/10 rounded-lg appearance-none cursor-pointer accent-accent">
+                                <span class="text-sm font-semibold text-ink w-12 text-right">{{ inputs.close_rate }}%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Funnel Visualization -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                <div class="bg-white/90 backdrop-blur-sm p-6 rounded-mb-lg shadow-mb border border-ink/5 mb-8">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-                        <div class="bg-blue-50 px-6 py-4 rounded-lg text-center min-w-[140px]">
-                            <div class="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Trafik</div>
-                            <div class="text-2xl font-bold text-brand">{{ Math.round(roiOutputs.estimated_clicks) }}</div>
-                            <div class="text-sm text-gray-600">besøgende</div>
+                        <div class="bg-ink/5 px-6 py-4 rounded-mb text-center min-w-[140px]">
+                            <div class="text-xs text-ink/60 uppercase tracking-wide font-semibold mb-1">Trafik</div>
+                            <div class="text-2xl font-heading font-bold text-ink">{{ Math.round(roiOutputs.estimated_clicks) }}</div>
+                            <div class="text-sm text-ink/60">besøgende</div>
                         </div>
-                        <div class="text-gray-300 text-2xl hidden md:block">→</div>
-                        <div class="text-gray-300 text-2xl md:hidden">↓</div>
-                        <div class="bg-blue-50 px-6 py-4 rounded-lg text-center min-w-[140px]">
-                            <div class="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Leads</div>
-                            <div class="text-2xl font-bold text-brand">{{ roiOutputs.estimated_leads }}</div>
-                            <div class="text-sm text-gray-600">henvendelser</div>
+                        <div class="text-ink/30 text-2xl hidden md:block">→</div>
+                        <div class="text-ink/30 text-2xl md:hidden">↓</div>
+                        <div class="bg-ink/5 px-6 py-4 rounded-mb text-center min-w-[140px]">
+                            <div class="text-xs text-ink/60 uppercase tracking-wide font-semibold mb-1">Leads</div>
+                            <div class="text-2xl font-heading font-bold text-ink">{{ roiOutputs.estimated_leads }}</div>
+                            <div class="text-sm text-ink/60">henvendelser</div>
                         </div>
-                        <div class="text-gray-300 text-2xl hidden md:block">→</div>
-                        <div class="text-gray-300 text-2xl md:hidden">↓</div>
-                        <div class="bg-green-50 px-6 py-4 rounded-lg text-center min-w-[140px] border-2 border-green-400">
-                            <div class="text-xs text-green-700 uppercase tracking-wide font-semibold mb-1">Nye Kunder</div>
-                            <div class="text-3xl font-bold text-green-800">{{ roiOutputs.estimated_customers }}</div>
-                            <div class="text-sm text-green-600">pr. måned</div>
+                        <div class="text-ink/30 text-2xl hidden md:block">→</div>
+                        <div class="text-ink/30 text-2xl md:hidden">↓</div>
+                        <div class="accent-gradient px-6 py-4 rounded-mb text-center min-w-[140px] shadow-mb">
+                            <div class="text-xs text-white/90 uppercase tracking-wide font-semibold mb-1">Nye Kunder</div>
+                            <div class="text-3xl font-heading font-bold text-white">{{ roiOutputs.estimated_customers }}</div>
+                            <div class="text-sm text-white/80">pr. måned</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ROI Table -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-white/90 backdrop-blur-sm rounded-mb-lg shadow-mb border border-ink/5 overflow-hidden">
                     <table class="w-full">
                         <thead>
-                            <tr class="bg-gray-50 border-b border-gray-200">
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/4">Label</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/6">Værdi</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/4">Hvad betyder det?</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 w-1/3">Beregning</th>
+                            <tr class="bg-ink/3 border-b border-ink/10">
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-ink/80 w-1/4">Label</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-ink/80 w-1/6">Værdi</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-ink/80 w-1/4">Hvad betyder det?</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-ink/80 w-1/3">Beregning</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="bg-blue-600 text-white">
+                            <tr class="bg-ink text-white">
                                 <td class="px-6 py-3 font-bold text-sm" colspan="4">📊 DINE TAL</td>
                             </tr>
-                            <tr v-for="row in roiTable.inputs" :key="'input-' + row.label" class="border-b border-gray-100 hover:bg-blue-50/50">
-                                <td class="px-6 py-3 text-sm text-gray-800">{{ row.label }}</td>
-                                <td class="px-6 py-3 text-sm font-bold text-gray-900 bg-yellow-50">{{ row.value }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-600 italic">{{ row.note }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-400">—</td>
+                            <tr v-for="row in roiTable.inputs" :key="'input-' + row.label" class="border-b border-ink/5 hover:bg-ink/3">
+                                <td class="px-6 py-3 text-sm text-ink">{{ row.label }}</td>
+                                <td class="px-6 py-3 text-sm font-bold text-ink bg-accent/10">{{ row.value }}</td>
+                                <td class="px-6 py-3 text-sm text-ink/60 italic">{{ row.note }}</td>
+                                <td class="px-6 py-3 text-sm text-ink/40">—</td>
                             </tr>
-                            <tr class="bg-teal-600 text-white">
+                            <tr class="bg-ink/80 text-white">
                                 <td class="px-6 py-3 font-bold text-sm" colspan="4">📈 KAMPAGNE ESTIMATER</td>
                             </tr>
-                            <tr v-for="row in roiTable.estimates" :key="'est-' + row.label" class="border-b border-gray-100 hover:bg-teal-50/50">
-                                <td class="px-6 py-3 text-sm text-gray-800">{{ row.label }}</td>
-                                <td class="px-6 py-3 text-sm font-bold text-gray-900 bg-yellow-50">{{ row.value }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-600 italic">{{ row.note }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-400">—</td>
+                            <tr v-for="row in roiTable.estimates" :key="'est-' + row.label" class="border-b border-ink/5 hover:bg-ink/3">
+                                <td class="px-6 py-3 text-sm text-ink">{{ row.label }}</td>
+                                <td class="px-6 py-3 text-sm font-bold text-ink bg-accent/10">{{ row.value }}</td>
+                                <td class="px-6 py-3 text-sm text-ink/60 italic">{{ row.note }}</td>
+                                <td class="px-6 py-3 text-sm text-ink/40">—</td>
                             </tr>
-                            <tr class="bg-green-600 text-white">
+                            <tr class="accent-gradient text-white">
                                 <td class="px-6 py-3 font-bold text-sm" colspan="4">🧮 BEREGNEDE RESULTATER</td>
                             </tr>
-                            <tr v-for="row in roiTable.results" :key="'res-' + row.label" class="border-b border-gray-100 hover:bg-green-50/50">
-                                <td class="px-6 py-3 text-sm text-gray-800">{{ row.label }}</td>
-                                <td class="px-6 py-3 text-sm font-bold text-gray-900">{{ row.value }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-600 italic">{{ row.note }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-500 font-mono">{{ row.calc }}</td>
+                            <tr v-for="row in roiTable.results" :key="'res-' + row.label" class="border-b border-ink/5 hover:bg-accent/5">
+                                <td class="px-6 py-3 text-sm text-ink">{{ row.label }}</td>
+                                <td class="px-6 py-3 text-sm font-bold text-ink">{{ row.value }}</td>
+                                <td class="px-6 py-3 text-sm text-ink/60 italic">{{ row.note }}</td>
+                                <td class="px-6 py-3 text-sm text-ink/50 font-mono text-xs">{{ row.calc }}</td>
                             </tr>
-                            <tr class="border-t-2 border-gray-300">
-                                <td class="px-6 py-4 font-bold text-gray-800">STATUS</td>
+                            <tr class="border-t-2 border-ink/15">
+                                <td class="px-6 py-4 font-heading font-bold text-ink">STATUS</td>
                                 <td class="px-6 py-4 font-bold text-lg"
                                     :class="roiOutputs.estimated_profit >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
                                     {{ roiOutputs.estimated_profit >= 0 ? '✅ Profitable' : '❌ Ikke profitable' }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-600" colspan="2">
+                                <td class="px-6 py-4 text-sm text-ink/60" colspan="2">
                                     {{ roiOutputs.estimated_profit >= 0 ? 'Du tjener penge på Google Ads!' : 'Justér dine tal for at opnå profitabilitet.' }}
                                 </td>
                             </tr>
@@ -267,74 +324,78 @@
             <div v-if="currentTab === 'keywords'" class="max-w-5xl mx-auto animate-fade-in">
                 <header class="mb-8 flex justify-between items-end">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Søgeordsanalyse</h1>
-                        <p class="text-gray-600">Hvad søger dine potentielle kunder efter?</p>
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-[11px] font-semibold text-accent uppercase tracking-[0.15em]">Research</span>
+                            <span class="h-0.5 w-8 bg-accent rounded-full"></span>
+                        </div>
+                        <h1 class="text-3xl font-heading font-bold text-ink mb-3">Søgeordsanalyse</h1>
+                        <p class="text-lg text-ink/60">Hvad søger dine potentielle kunder efter?</p>
                     </div>
-                    <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-sm">
-                        <span class="font-bold text-brand">{{ keywords.length }}</span> søgeord fundet
+                    <div class="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-mb shadow-mb border border-ink/5 text-sm">
+                        <span class="font-bold text-accent">{{ keywords.length }}</span> søgeord fundet
                     </div>
                 </header>
 
                 <!-- Match Type Distribution -->
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6" v-if="matchTypeDist && matchTypeDist.counts">
+                <div class="bg-white/90 backdrop-blur-sm p-4 rounded-mb-lg shadow-mb border border-ink/5 mb-6" v-if="matchTypeDist && matchTypeDist.counts">
                     <div class="flex flex-wrap gap-6 items-center justify-between">
                         <div class="flex gap-4">
                             <div class="flex items-center gap-2" v-if="matchTypeDist.counts.Exact > 0">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">Exact</span>
-                                <span class="text-sm text-gray-600">{{ matchTypeDist.counts.Exact }} ({{ matchTypeDist.percentages.Exact }}%)</span>
+                                <span class="text-sm text-ink/60">{{ matchTypeDist.counts.Exact }} ({{ matchTypeDist.percentages.Exact }}%)</span>
                             </div>
                             <div class="flex items-center gap-2" v-if="matchTypeDist.counts.Phrase > 0">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Phrase</span>
-                                <span class="text-sm text-gray-600">{{ matchTypeDist.counts.Phrase }} ({{ matchTypeDist.percentages.Phrase }}%)</span>
+                                <span class="text-sm text-ink/60">{{ matchTypeDist.counts.Phrase }} ({{ matchTypeDist.percentages.Phrase }}%)</span>
                             </div>
                             <div class="flex items-center gap-2" v-if="matchTypeDist.counts.Broad > 0">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Broad</span>
-                                <span class="text-sm text-gray-600">{{ matchTypeDist.counts.Broad }} ({{ matchTypeDist.percentages.Broad }}%)</span>
+                                <span class="text-sm text-ink/60">{{ matchTypeDist.counts.Broad }} ({{ matchTypeDist.percentages.Broad }}%)</span>
                             </div>
                         </div>
-                        <div class="text-sm text-gray-500">Match Type fordeling</div>
+                        <div class="text-sm text-ink/50">Match Type fordeling</div>
                     </div>
                 </div>
 
                 <!-- Keyword filter -->
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
+                <div class="bg-white/90 backdrop-blur-sm p-4 rounded-mb-lg shadow-mb border border-ink/5 mb-6">
                     <div class="flex flex-wrap gap-4 items-center">
                         <input type="text" v-model="keywordSearch" placeholder="Søg søgeord..."
-                            class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-brand focus:border-brand">
-                        <select v-model="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-brand focus:border-brand">
+                            class="flex-1 min-w-[200px] px-4 py-2.5 border border-ink/15 rounded-mb focus:ring-accent focus:border-accent bg-white/80">
+                        <select v-model="categoryFilter" class="px-4 py-2.5 border border-ink/15 rounded-mb focus:ring-accent focus:border-accent bg-white/80">
                             <option value="">Alle kategorier</option>
                             <option v-for="cat in uniqueCategories" :key="cat" :value="cat">{{ cat }}</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-white/90 backdrop-blur-sm rounded-mb-lg shadow-mb border border-ink/5 overflow-hidden">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <table class="min-w-full divide-y divide-ink/10">
+                            <thead class="bg-ink/3">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Søgeord</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match Type</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Månedlige Søgninger</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Konkurrence</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top bud (lav)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top bud (høj)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-ink/70 uppercase tracking-wider">Søgeord</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-ink/70 uppercase tracking-wider">Match Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-ink/70 uppercase tracking-wider">Månedlige Søgninger</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-ink/70 uppercase tracking-wider">Konkurrence</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-ink/70 uppercase tracking-wider">Top bud (lav)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-ink/70 uppercase tracking-wider">Top bud (høj)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-ink/70 uppercase tracking-wider">Kategori</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="(kw, index) in filteredKeywords" :key="index" class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ kw.Keyword || kw.keyword }}</td>
+                            <tbody class="bg-white/50 divide-y divide-ink/5">
+                                <tr v-for="(kw, index) in filteredKeywords" :key="index" class="hover:bg-ink/3 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-ink">{{ kw.Keyword || kw.keyword }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <span :class="getMatchTypeClass(kw['Match Type'] || kw.match_type)"
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
                                             {{ kw['Match Type'] || kw.match_type || 'Phrase' }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ink/70">
                                         <div class="flex items-center">
-                                            <div class="w-16 bg-gray-200 rounded-full h-1.5 mr-2">
-                                                <div class="bg-brand h-1.5 rounded-full" :style="{ width: Math.min(100, ((kw['Avg. Monthly Searches'] || kw.avg_monthly_searches || 0) / maxVolume) * 100) + '%' }"></div>
+                                            <div class="w-16 bg-ink/10 rounded-full h-1.5 mr-2">
+                                                <div class="bg-accent h-1.5 rounded-full" :style="{ width: Math.min(100, ((kw['Avg. Monthly Searches'] || kw.avg_monthly_searches || 0) / maxVolume) * 100) + '%' }"></div>
                                             </div>
                                             {{ kw['Avg. Monthly Searches'] || kw.avg_monthly_searches || 0 }}
                                         </div>
@@ -345,9 +406,9 @@
                                             {{ kw.Competition || kw.competition || 'N/A' }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatBid(kw['Top of page bid (low range)'] || kw.low_top_of_page_bid) }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatBid(kw['Top of page bid (high range)'] || kw.high_top_of_page_bid) }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ kw.Category || kw.category || 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ink/70">{{ formatBid(kw['Top of page bid (low range)'] || kw.low_top_of_page_bid) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ink/70">{{ formatBid(kw['Top of page bid (high range)'] || kw.high_top_of_page_bid) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ink/70">{{ kw.Category || kw.category || 'N/A' }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -355,50 +416,51 @@
                 </div>
 
                 <!-- Negative Keywords Section -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mt-8" v-if="negativeKeywords && Object.keys(negativeKeywords).length > 0">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <span class="text-red-500">🚫</span> Negative søgeord
+                <div class="bg-white/90 backdrop-blur-sm p-6 rounded-mb-lg shadow-mb border border-ink/5 mt-8" v-if="negativeKeywords && Object.keys(negativeKeywords).length > 0">
+                    <h3 class="text-xl font-heading font-bold text-ink mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-red-500 rounded-full"></span>
+                        Negative søgeord
                     </h3>
-                    <p class="text-sm text-gray-600 mb-4">Disse søgeord vil blive ekskluderet for at undgå irrelevant trafik og spildt budget.</p>
+                    <p class="text-sm text-ink/60 mb-4">Disse søgeord vil blive ekskluderet for at undgå irrelevant trafik og spildt budget.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Global Negatives -->
-                        <div v-if="negativeKeywords.global && negativeKeywords.global.length > 0" class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                        <div v-if="negativeKeywords.global && negativeKeywords.global.length > 0" class="border border-ink/10 rounded-mb p-4 bg-white/50">
+                            <h4 class="font-semibold text-ink mb-3 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                                 Globale negative
                             </h4>
                             <div class="flex flex-wrap gap-2">
                                 <span v-for="kw in negativeKeywords.global" :key="kw"
-                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                                    class="inline-flex items-center px-2 py-1 rounded-mb text-xs font-medium bg-red-50 text-red-700 border border-red-200">
                                     -{{ kw }}
                                 </span>
                             </div>
                         </div>
 
                         <!-- Vertical/Industry Negatives -->
-                        <div v-if="negativeKeywords.vertical_b2b && negativeKeywords.vertical_b2b.length > 0" class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                        <div v-if="negativeKeywords.vertical_b2b && negativeKeywords.vertical_b2b.length > 0" class="border border-ink/10 rounded-mb p-4 bg-white/50">
+                            <h4 class="font-semibold text-ink mb-3 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
                                 B2B negative
                             </h4>
                             <div class="flex flex-wrap gap-2">
                                 <span v-for="kw in negativeKeywords.vertical_b2b" :key="kw"
-                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200">
+                                    class="inline-flex items-center px-2 py-1 rounded-mb text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200">
                                     -{{ kw }}
                                 </span>
                             </div>
                         </div>
 
                         <!-- Client-Specific Negatives -->
-                        <div v-if="negativeKeywords.client_specific && negativeKeywords.client_specific.length > 0" class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                        <div v-if="negativeKeywords.client_specific && negativeKeywords.client_specific.length > 0" class="border border-ink/10 rounded-mb p-4 bg-white/50">
+                            <h4 class="font-semibold text-ink mb-3 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
                                 Kundespecifikke negative
                             </h4>
                             <div class="flex flex-wrap gap-2">
                                 <span v-for="kw in negativeKeywords.client_specific" :key="kw"
-                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
+                                    class="inline-flex items-center px-2 py-1 rounded-mb text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
                                     -{{ kw }}
                                 </span>
                             </div>
@@ -407,13 +469,13 @@
 
                     <!-- Campaign-specific negative lists -->
                     <div v-if="negativeKeywords.campaign_negative_lists && Object.keys(negativeKeywords.campaign_negative_lists).length > 0" class="mt-6">
-                        <h4 class="font-semibold text-gray-800 mb-3">Kampagne-specifikke negative lister</h4>
+                        <h4 class="font-semibold text-ink mb-3">Kampagne-specifikke negative lister</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div v-for="(keywords, campaign) in negativeKeywords.campaign_negative_lists" :key="campaign" class="border border-gray-200 rounded-lg p-3 bg-gray-50">
-                                <div class="text-sm font-medium text-gray-700 mb-2">{{ formatCampaignName(campaign) }}</div>
+                            <div v-for="(keywords, campaign) in negativeKeywords.campaign_negative_lists" :key="campaign" class="border border-ink/10 rounded-mb p-3 bg-ink/3">
+                                <div class="text-sm font-medium text-ink/80 mb-2">{{ formatCampaignName(campaign) }}</div>
                                 <div class="flex flex-wrap gap-1">
                                     <span v-for="kw in keywords" :key="kw"
-                                        class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 border border-gray-300">
+                                        class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ink/5 text-ink/70 border border-ink/10">
                                         -{{ kw }}
                                     </span>
                                 </div>
@@ -426,29 +488,33 @@
             <!-- Campaigns Tab -->
             <div v-if="currentTab === 'campaigns'" class="max-w-5xl mx-auto animate-fade-in">
                 <header class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Kampagnestruktur</h1>
-                    <p class="text-gray-600">Hvordan vi organiserer kontoen for maksimal effektivitet.</p>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-[11px] font-semibold text-accent uppercase tracking-[0.15em]">Struktur</span>
+                        <span class="h-0.5 w-8 bg-accent rounded-full"></span>
+                    </div>
+                    <h1 class="text-3xl font-heading font-bold text-ink mb-3">Kampagnestruktur</h1>
+                    <p class="text-lg text-ink/60">Hvordan vi organiserer kontoen for maksimal effektivitet.</p>
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div v-for="(group, campaignName) in groupedCampaigns" :key="campaignName"
-                        class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                            <h3 class="font-bold text-gray-900">{{ formatCampaignName(campaignName) }}</h3>
-                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Campaign</span>
+                        class="bg-white/90 backdrop-blur-sm rounded-mb-lg shadow-mb border border-ink/5 overflow-hidden mb-hover">
+                        <div class="bg-ink/3 px-6 py-4 border-b border-ink/10 flex justify-between items-center">
+                            <h3 class="font-heading font-bold text-ink">{{ formatCampaignName(campaignName) }}</h3>
+                            <span class="bg-accent/10 text-accent text-xs font-semibold px-2.5 py-0.5 rounded-mb">Campaign</span>
                         </div>
                         <div class="p-6">
                             <div v-for="(keywords, adGroup) in group" :key="adGroup" class="mb-6 last:mb-0">
                                 <div class="flex items-center mb-3">
-                                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                                    <h4 class="font-medium text-gray-800">{{ adGroup }}</h4>
+                                    <div class="w-2 h-2 bg-accent rounded-full mr-2"></div>
+                                    <h4 class="font-medium text-ink">{{ adGroup }}</h4>
                                 </div>
                                 <div class="ml-4 flex flex-wrap gap-2">
                                     <span v-for="kw in keywords.slice(0, 8)" :key="kw"
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-mb text-xs font-medium bg-ink/5 text-ink/80 border border-ink/10">
                                         "{{ kw }}"
                                     </span>
-                                    <span v-if="keywords.length > 8" class="text-xs text-gray-500 self-center">
+                                    <span v-if="keywords.length > 8" class="text-xs text-ink/50 self-center">
                                         +{{ keywords.length - 8 }} mere
                                     </span>
                                 </div>
@@ -461,19 +527,23 @@
             <!-- Ads Tab -->
             <div v-if="currentTab === 'ads'" class="max-w-4xl mx-auto animate-fade-in">
                 <header class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Annonceeksempler</h1>
-                    <p class="text-gray-600">Hvordan dine annoncer vil se ud på Google.</p>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-[11px] font-semibold text-accent uppercase tracking-[0.15em]">Preview</span>
+                        <span class="h-0.5 w-8 bg-accent rounded-full"></span>
+                    </div>
+                    <h1 class="text-3xl font-heading font-bold text-ink mb-3">Annonceeksempler</h1>
+                    <p class="text-lg text-ink/60">Hvordan dine annoncer vil se ud på Google.</p>
                 </header>
 
                 <div class="space-y-6">
                     <div v-for="(ad, index) in ads" :key="index"
-                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                        <div class="text-xs text-gray-400 mb-4 uppercase tracking-wider font-semibold">{{ formatCampaignName(ad.Campaign || ad.campaign) }}</div>
+                        class="bg-white/90 backdrop-blur-sm p-6 rounded-mb-lg shadow-mb border border-ink/5 mb-hover">
+                        <div class="text-xs text-accent mb-4 uppercase tracking-[0.1em] font-semibold">{{ formatCampaignName(ad.Campaign || ad.campaign) }}</div>
 
                         <!-- Google Ad Preview -->
-                        <div class="font-sans max-w-xl">
+                        <div class="font-sans max-w-xl bg-white p-4 rounded-mb border border-ink/10">
                             <div class="flex items-center gap-1 mb-1">
-                                <span class="font-bold text-black text-sm">Annonce</span>
+                                <span class="font-bold text-ink text-sm">Annonce</span>
                                 <span class="text-green-700 text-sm">· {{ ad['Final URL'] || ad.final_url }}</span>
                             </div>
                             <div class="text-[#1a0dab] text-xl hover:underline cursor-pointer mb-1 leading-snug">
