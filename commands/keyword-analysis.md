@@ -392,18 +392,21 @@ Before proceeding to Phase 6, verify:
 Format:
 ```json
 {
+  "currency": "DKK",
   "budget": 5000,
   "cpc": 15,
-  "estimated_clicks": 333,
-  "conversion_rate": 0.05,
-  "estimated_leads": 16,
-  "close_rate": 0.20,
-  "estimated_customers": 3,
+  "conversion_rate": 5,
+  "close_rate": 20,
   "profit_per_customer": 2000,
+  "estimated_clicks": 333,
+  "estimated_leads": 16,
+  "estimated_customers": 3,
   "estimated_revenue": 6600,
   "roas": 1.32
 }
 ```
+
+**Note:** Rates should be integers (5 = 5%), not decimals (0.05). The presentation uses interactive sliders.
 
 ---
 

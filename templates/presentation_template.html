@@ -275,6 +275,27 @@
                     </div>
                 </header>
 
+                <!-- Match Type Distribution -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6" v-if="matchTypeDist && matchTypeDist.counts">
+                    <div class="flex flex-wrap gap-6 items-center justify-between">
+                        <div class="flex gap-4">
+                            <div class="flex items-center gap-2" v-if="matchTypeDist.counts.Exact > 0">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">Exact</span>
+                                <span class="text-sm text-gray-600">{{ matchTypeDist.counts.Exact }} ({{ matchTypeDist.percentages.Exact }}%)</span>
+                            </div>
+                            <div class="flex items-center gap-2" v-if="matchTypeDist.counts.Phrase > 0">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Phrase</span>
+                                <span class="text-sm text-gray-600">{{ matchTypeDist.counts.Phrase }} ({{ matchTypeDist.percentages.Phrase }}%)</span>
+                            </div>
+                            <div class="flex items-center gap-2" v-if="matchTypeDist.counts.Broad > 0">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Broad</span>
+                                <span class="text-sm text-gray-600">{{ matchTypeDist.counts.Broad }} ({{ matchTypeDist.percentages.Broad }}%)</span>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500">Match Type fordeling</div>
+                    </div>
+                </div>
+
                 <!-- Keyword filter -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
                     <div class="flex flex-wrap gap-4 items-center">
@@ -293,6 +314,7 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Søgeord</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match Type</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Månedlige Søgninger</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Konkurrence</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top bud (lav)</th>
@@ -303,6 +325,12 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="(kw, index) in filteredKeywords" :key="index" class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ kw.Keyword || kw.keyword }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <span :class="getMatchTypeClass(kw['Match Type'] || kw.match_type)"
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                            {{ kw['Match Type'] || kw.match_type || 'Phrase' }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <div class="flex items-center">
                                             <div class="w-16 bg-gray-200 rounded-full h-1.5 mr-2">
@@ -323,6 +351,74 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Negative Keywords Section -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mt-8" v-if="negativeKeywords && Object.keys(negativeKeywords).length > 0">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="text-red-500">🚫</span> Negative søgeord
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-4">Disse søgeord vil blive ekskluderet for at undgå irrelevant trafik og spildt budget.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Global Negatives -->
+                        <div v-if="negativeKeywords.global && negativeKeywords.global.length > 0" class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                Globale negative
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="kw in negativeKeywords.global" :key="kw"
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                                    -{{ kw }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Vertical/Industry Negatives -->
+                        <div v-if="negativeKeywords.vertical_b2b && negativeKeywords.vertical_b2b.length > 0" class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                                B2B negative
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="kw in negativeKeywords.vertical_b2b" :key="kw"
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200">
+                                    -{{ kw }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Client-Specific Negatives -->
+                        <div v-if="negativeKeywords.client_specific && negativeKeywords.client_specific.length > 0" class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                                Kundespecifikke negative
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="kw in negativeKeywords.client_specific" :key="kw"
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
+                                    -{{ kw }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campaign-specific negative lists -->
+                    <div v-if="negativeKeywords.campaign_negative_lists && Object.keys(negativeKeywords.campaign_negative_lists).length > 0" class="mt-6">
+                        <h4 class="font-semibold text-gray-800 mb-3">Kampagne-specifikke negative lister</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div v-for="(keywords, campaign) in negativeKeywords.campaign_negative_lists" :key="campaign" class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                                <div class="text-sm font-medium text-gray-700 mb-2">{{ formatCampaignName(campaign) }}</div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span v-for="kw in keywords" :key="kw"
+                                        class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 border border-gray-300">
+                                        -{{ kw }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -422,6 +518,8 @@
                 const keywords = {{KEYWORDS_JSON}};
                 const campaignStructure = {{CAMPAIGN_STRUCTURE_JSON}};
                 const ads = {{ADS_JSON}};
+                const matchTypeDist = {{MATCH_TYPE_DIST_JSON}};
+                const negativeKeywords = {{NEGATIVE_KEYWORDS_JSON}};
 
                 const inputs = reactive({
                     budget: {{BUDGET}},
@@ -487,6 +585,14 @@
                     if (level === 'high') return 'bg-red-100 text-red-800';
                     if (level === 'medium') return 'bg-yellow-100 text-yellow-800';
                     if (level === 'low') return 'bg-green-100 text-green-800';
+                    return 'bg-gray-100 text-gray-800';
+                };
+
+                const getMatchTypeClass = (matchType) => {
+                    const type = (matchType || '').toLowerCase();
+                    if (type === 'exact') return 'bg-purple-100 text-purple-800';
+                    if (type === 'phrase') return 'bg-blue-100 text-blue-800';
+                    if (type === 'broad') return 'bg-orange-100 text-orange-800';
                     return 'bg-gray-100 text-gray-800';
                 };
 
@@ -567,9 +673,12 @@
                     maxVolume,
                     groupedCampaigns,
                     ads,
+                    matchTypeDist,
+                    negativeKeywords,
                     formatCurrency,
                     formatBid,
                     getCompetitionClass,
+                    getMatchTypeClass,
                     formatCampaignName,
                     formatHeadline
                 };

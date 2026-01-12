@@ -287,15 +287,27 @@ def validate_phases(client_dir: Path) -> tuple[bool, list[dict]]:
             }
         )
     else:
-        ok, err = check_roi_scenarios(phase6_file)
+        # Validate JSON is valid
+        ok, err = check_json_valid(phase6_file)
         if not ok:
             issues.append(
                 {
                     "phase": 6,
                     "severity": "block",
-                    "message": f"Phase 6 incomplete: ROI calculator missing scenarios - {err}",
+                    "message": f"Phase 6 error: Invalid JSON - {err}",
                 }
             )
+        else:
+            # Scenarios are optional - presentation has interactive calculator
+            ok, err = check_roi_scenarios(phase6_file)
+            if not ok:
+                issues.append(
+                    {
+                        "phase": 6,
+                        "severity": "warn",
+                        "message": f"Phase 6 quality: ROI scenarios are optional - {err}",
+                    }
+                )
 
     # Phase 7: presentation.html
     phase7_file = client_dir / "presentation.html"
