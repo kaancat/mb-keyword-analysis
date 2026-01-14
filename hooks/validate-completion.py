@@ -20,9 +20,31 @@ import re
 from pathlib import Path
 
 
+def is_keyword_analysis_directory(path: Path) -> bool:
+    """Check if directory contains keyword analysis artifacts (not just any random directory)."""
+    # Keyword-analysis-specific files that indicate a workflow is in progress
+    analysis_markers = [
+        "website_content.md",
+        "potential_analysis.md",
+        "keyword_analysis.json",
+        "negative_keywords.json",
+        "campaign_structure.json",
+        "ad_copy.json",
+        "roi_calculator.json",
+        "presentation.html",
+        ".keyword-analysis-in-progress",  # Explicit marker file
+    ]
+    return any((path / marker).exists() for marker in analysis_markers)
+
+
 def find_client_dir():
-    """Find the active client directory from environment or recent files."""
-    # Check environment variable first
+    """Find the active client directory from environment or recent files.
+
+    IMPORTANT: Only returns a directory if it contains actual keyword analysis artifacts.
+    This prevents the hook from triggering in unrelated projects that happen
+    to have a clients/ folder.
+    """
+    # Check environment variable first (explicit override)
     client_dir = os.environ.get("MB_CLIENT_DIR")
     if client_dir and Path(client_dir).exists():
         return Path(client_dir)
@@ -31,8 +53,12 @@ def find_client_dir():
     cwd = Path.cwd()
     clients_dir = cwd / "clients"
     if clients_dir.exists():
-        # Find most recently modified client
-        client_dirs = [d for d in clients_dir.iterdir() if d.is_dir()]
+        # Find most recently modified client WITH actual analysis artifacts
+        client_dirs = [
+            d
+            for d in clients_dir.iterdir()
+            if d.is_dir() and is_keyword_analysis_directory(d)
+        ]
         if client_dirs:
             return max(client_dirs, key=lambda d: d.stat().st_mtime)
 
