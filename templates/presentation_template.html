@@ -555,10 +555,10 @@
                         <div class="text-xs text-accent mb-4 uppercase tracking-[0.1em] font-semibold">{{ formatCampaignName(ad.Campaign || ad.campaign) }}</div>
 
                         <!-- Google Ad Preview -->
-                        <div class="font-sans max-w-xl bg-white p-4 rounded-mb border border-ink/10">
-                            <div class="flex items-center gap-1 mb-1">
-                                <span class="font-bold text-ink text-sm">Annonce</span>
-                                <span class="text-green-700 text-sm">· {{ ad['Final URL'] || ad.final_url }}</span>
+                        <div class="font-sans max-w-xl bg-white p-4 rounded-mb border border-ink/10 overflow-hidden">
+                            <div class="flex items-center gap-1 mb-1 overflow-hidden">
+                                <span class="font-bold text-ink text-sm flex-shrink-0">Annonce</span>
+                                <span class="text-green-700 text-sm truncate max-w-[280px]">· {{ ad['Final URL'] || ad.final_url }}</span>
                             </div>
                             <div class="text-[#1a0dab] text-xl hover:underline cursor-pointer mb-1 leading-snug">
                                 {{ formatHeadline(ad['Headline 1'] || ad.headline_1) }} | {{ ad['Headline 2'] || ad.headline_2 }} | {{ ad['Headline 3'] || ad.headline_3 }}

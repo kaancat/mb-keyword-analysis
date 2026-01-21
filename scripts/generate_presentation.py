@@ -117,6 +117,8 @@ def extract_executive_summary(potential_analysis_path: Path) -> str:
             flags=re.MULTILINE,
         )
         html = re.sub(r"^\s*-\s+(.+)$", r"<li>\1</li>", html, flags=re.MULTILINE)
+        # Convert inline bold **text** to <strong>text</strong>
+        html = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", html)
         # Wrap lists
         html = re.sub(
             r"(<li>.*</li>\n?)+",
