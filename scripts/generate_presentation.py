@@ -317,6 +317,8 @@ def generate_presentation(
         brand_color = brand_data.get("primary_color", "#2b74b8")
     accent_color = brand_data.get("accent_color", "#f5822d")
     logo_url = brand_data.get("logo_url", "")
+    agency_logo = brand_data.get("agency_logo", "")
+    cta_email = brand_data.get("cta_email", "")
 
     # Get ROI values
     budget = roi_data.get("budget", 5000)
@@ -342,13 +344,22 @@ def generate_presentation(
     with open(template_path, "r", encoding="utf-8") as f:
         template = f.read()
 
+    # Determine CTA URL (email takes precedence)
+    if cta_email:
+        cta_url = f"mailto:{cta_email}"
+    elif website:
+        cta_url = f"{website}/kontakt/"
+    else:
+        cta_url = "#"
+
     # Prepare replacements
     replacements = {
         "{{CLIENT_NAME}}": client_name,
         "{{CLIENT_LOGO}}": logo_url,
+        "{{AGENCY_LOGO}}": agency_logo,
         "{{CLIENT_TAGLINE}}": tagline,
         "{{CLIENT_WEBSITE}}": website,
-        "{{CLIENT_CTA}}": f"{website}/kontakt/" if website else "#",
+        "{{CLIENT_CTA}}": cta_url,
         "{{SUMMARY_SUBTITLE}}": "Datadrevet plan for at nå flere kunder via Google Ads.",
         "{{EXECUTIVE_SUMMARY}}": executive_summary,
         "{{BRAND_COLOR}}": brand_color,

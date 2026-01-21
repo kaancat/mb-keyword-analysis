@@ -137,6 +137,7 @@
             <!-- Summary Tab -->
             <div v-if="currentTab === 'summary'" class="max-w-4xl mx-auto space-y-8 animate-fade-in">
                 <header class="mb-8">
+                    <img v-if="clientLogo" :src="clientLogo" :alt="clientName + ' logo'" class="h-12 mb-6 object-contain">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="text-[11px] font-semibold text-accent uppercase tracking-[0.15em]">{{ clientTagline }}</span>
                         <span class="h-0.5 w-8 bg-accent rounded-full"></span>
@@ -579,6 +580,17 @@
             </div>
 
         </main>
+
+        <!-- Footer with Agency Branding -->
+        <footer v-if="agencyLogo" class="bg-white border-t border-ink/10 py-6 px-8">
+            <div class="max-w-4xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-ink/50">Udarbejdet af</span>
+                    <img :src="agencyLogo" alt="Monday Brew" class="h-8 object-contain">
+                </div>
+                <a :href="clientCTA" class="text-sm text-accent hover:underline font-medium">Kontakt os</a>
+            </div>
+        </footer>
     </div>
 
     <script>
@@ -593,6 +605,7 @@
                 // --- DATA INJECTION START ---
                 const clientName = '{{CLIENT_NAME}}';
                 const clientLogo = '{{CLIENT_LOGO}}';
+                const agencyLogo = '{{AGENCY_LOGO}}';
                 const clientTagline = '{{CLIENT_TAGLINE}}';
                 const clientWebsite = '{{CLIENT_WEBSITE}}';
                 const clientCTA = '{{CLIENT_CTA}}';
@@ -742,6 +755,7 @@
                     categoryFilter,
                     clientName,
                     clientLogo,
+                    agencyLogo,
                     clientTagline,
                     clientWebsite,
                     clientCTA,
